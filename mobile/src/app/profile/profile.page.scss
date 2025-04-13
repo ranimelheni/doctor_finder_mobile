@@ -1,0 +1,230 @@
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+.loading-spinner {
+  display: block;
+  margin: 20px auto;
+}
+
+/* Regular User Profile Styling (Mode 2) */
+ion-card:not(.doctor-own-card):not(.patient-profile-card) {
+  background: var(--ion-card-background);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--ion-shadow-color);
+  margin: 16px;
+
+  ion-card-header {
+    padding: 16px;
+    text-align: center;
+
+    ion-card-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+    }
+
+    ion-card-subtitle {
+      font-size: 16px;
+      color: var(--ion-subtext-color);
+      margin-top: 4px;
+    }
+  }
+
+  ion-card-content {
+    padding: 16px;
+
+    ion-item {
+      --background: transparent;
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      color: var(--ion-text-color);
+
+      ion-icon.theme-icon {
+        margin-right: 12px;
+        color: var(--ion-icon-color);
+      }
+
+      ion-label {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+/* Beautified Doctor Profile Styling (Mode 1) */
+.doctor-own-card {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px var(--ion-shadow-color);
+  margin: 16px;
+  border: 2px solid var(--ion-accent-color);
+
+  .doctor-own-header {
+    background: linear-gradient(135deg, var(--ion-accent-color), #00d4ff);
+    padding: 20px;
+    text-align: center;
+
+    .doctor-own-avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 12px;
+      img {
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ffffff;
+      }
+    }
+
+    .doctor-own-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .doctor-own-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 4px;
+    }
+
+    .doctor-own-specialty {
+      font-size: 18px;
+      color: #ffffff;
+      margin-top: 8px;
+      font-style: italic;
+    }
+  }
+
+  .doctor-own-content {
+    padding: 20px;
+
+    ion-item {
+      --background: transparent;
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      color: var(--ion-text-color);
+
+      ion-icon.theme-icon {
+        margin-right: 12px;
+        color: var(--ion-icon-color);
+      }
+
+      ion-label {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.patient-profile-card {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px var(--ion-shadow-color);
+  margin: 16px;
+  overflow: hidden;
+  animation: fade-in 0.5s ease-out;
+
+  .patient-profile-header {
+    background: linear-gradient(135deg, var(--ion-accent-color), #00d4ff);
+    padding: 25px;
+    text-align: center;
+
+    .patient-avatar {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 12px;
+      img {
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px var(--ion-shadow-color);
+      }
+    }
+
+    .patient-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .patient-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.9);
+      font-style: italic;
+    }
+  }
+
+  .patient-profile-content {
+    padding: 20px;
+
+    .patient-info-list {
+      margin: 0;
+
+      ion-item {
+        --background: transparent;
+        --padding-start: 0;
+        --inner-padding-end: 0;
+        margin-bottom: 12px;
+
+        .info-icon {
+          font-size: 24px;
+          color: var(--ion-icon-color);
+          margin-right: 16px;
+          transition: transform 0.3s ease;
+        }
+
+        .label-title {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--ion-subtext-color);
+          text-transform: uppercase;
+          margin-right: 10px;
+          min-width: 60px;
+        }
+
+        .label-value {
+          font-size: 16px;
+          font-weight: 500;
+          color: var(--ion-text-color);
+          word-break: break-word;
+        }
+
+        &:hover .info-icon {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    /* Added button styling */
+    ion-button {
+      --border-radius: 8px;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px 0 0 0;
+      font-weight: 500;
+      
+      ion-icon {
+        margin-right: 8px;
+      }
+      
+      &:hover {
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+/* Fade-in Animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

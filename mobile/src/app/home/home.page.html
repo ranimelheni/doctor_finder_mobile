@@ -1,0 +1,186 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Find a Doctor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content 
+      pullingIcon="chevron-down-outline" 
+      pullingText="Pull to refresh" 
+      refreshingSpinner="crescent" 
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
+
+  <!-- Patient View -->
+  <div *ngIf="!isDoctor && !loading">
+    <div class="ad-container">
+      <ion-card class="ad-placeholder">
+        <ion-card-content class="ion-text-center">
+          <p>Your Ad Here</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="search-container">
+      <ion-searchbar 
+        placeholder="Search doctors in Tunisia" 
+        [(ngModel)]="searchQuery" 
+        (ionInput)="filterDoctorsRealTime()" 
+        class="search-bar">
+      </ion-searchbar>
+      
+      <ion-grid class="filter-grid">
+        <ion-row>
+          <ion-col size="6">
+            <ion-select 
+              placeholder="Specialty" 
+              [(ngModel)]="selectedSpecialty" 
+              (ionChange)="filterDoctorsRealTime()" 
+              interface="popover">
+              <ion-select-option value="">All Specialties</ion-select-option>
+              <ion-select-option value="Cardiology">Cardiology</ion-select-option>
+              <ion-select-option value="Dentistry">Dentistry</ion-select-option>
+              <ion-select-option value="Dermatology">Dermatology</ion-select-option>
+              <ion-select-option value="Endocrinology">Endocrinology</ion-select-option>
+              <ion-select-option value="Gastroenterology">Gastroenterology</ion-select-option>
+              <ion-select-option value="Gynecology">Gynecology</ion-select-option>
+              <ion-select-option value="Neurology">Neurology</ion-select-option>
+              <ion-select-option value="Oncology">Oncology</ion-select-option>
+              <ion-select-option value="Orthopedics">Orthopedics</ion-select-option>
+              <ion-select-option value="Pediatrics">Pediatrics</ion-select-option>
+              <ion-select-option value="Psychiatry">Psychiatry</ion-select-option>
+              <ion-select-option value="Urology">Urology</ion-select-option>
+              <ion-select-option value="Ophthalmology">Ophthalmology</ion-select-option>
+              <ion-select-option value="Otolaryngology">Otolaryngology (ENT)</ion-select-option>
+              <ion-select-option value="Pulmonology">Pulmonology</ion-select-option>
+              <ion-select-option value="Rheumatology">Rheumatology</ion-select-option>
+              <ion-select-option value="General Surgery">General Surgery</ion-select-option>
+              <ion-select-option value="Neurosurgery">Neurosurgery</ion-select-option>
+              <ion-select-option value="Plastic Surgery">Plastic Surgery</ion-select-option>
+              <ion-select-option value="Emergency Medicine">Emergency Medicine</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col size="6">
+            <ion-select 
+              placeholder="Governorate" 
+              [(ngModel)]="selectedCity" 
+              (ionChange)="filterDoctorsRealTime()" 
+              interface="popover">
+              <ion-select-option value="">All Governorates</ion-select-option>
+              <ion-select-option value="Ariana">Ariana</ion-select-option>
+              <ion-select-option value="Béja">Béja</ion-select-option>
+              <ion-select-option value="Ben Arous">Ben Arous</ion-select-option>
+              <ion-select-option value="Bizerte">Bizerte</ion-select-option>
+              <ion-select-option value="Gabès">Gabès</ion-select-option>
+              <ion-select-option value="Gafsa">Gafsa</ion-select-option>
+              <ion-select-option value="Jendouba">Jendouba</ion-select-option>
+              <ion-select-option value="Kairouan">Kairouan</ion-select-option>
+              <ion-select-option value="Kasserine">Kasserine</ion-select-option>
+              <ion-select-option value="Kebili">Kebili</ion-select-option>
+              <ion-select-option value="Kef">Kef</ion-select-option>
+              <ion-select-option value="Mahdia">Mahdia</ion-select-option>
+              <ion-select-option value="Manouba">Manouba</ion-select-option>
+              <ion-select-option value="Medenine">Medenine</ion-select-option>
+              <ion-select-option value="Monastir">Monastir</ion-select-option>
+              <ion-select-option value="Nabeul">Nabeul</ion-select-option>
+              <ion-select-option value="Sfax">Sfax</ion-select-option>
+              <ion-select-option value="Sidi Bouzid">Sidi Bouzid</ion-select-option>
+              <ion-select-option value="Siliana">Siliana</ion-select-option>
+              <ion-select-option value="Sousse">Sousse</ion-select-option>
+              <ion-select-option value="Tataouine">Tataouine</ion-select-option>
+              <ion-select-option value="Tozeur">Tozeur</ion-select-option>
+              <ion-select-option value="Tunis">Tunis</ion-select-option>
+              <ion-select-option value="Zaghouan">Zaghouan</ion-select-option>
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-button *ngIf="!isDoctor" expand="block" (click)="searchDoctors()">Search Doctors</ion-button>
+
+      <div class="quick-filters">
+        <ion-button fill="outline" color="light" (click)="applyQuickFilter('Emergency')">Emergency</ion-button>
+        <ion-button fill="outline" color="light" (click)="applyQuickFilter('Pediatrics')">Pediatrics</ion-button>
+        <ion-button fill="outline" color="light" (click)="applyQuickFilter('Nearby')">Nearby</ion-button>
+      </div>
+    </div>
+
+    <ion-list class="doctors-list">
+      <ion-card 
+        *ngFor="let doctor of displayedDoctors" 
+        button 
+        [routerLink]="['/doctor-profile']" 
+        [queryParams]="{ id: doctor.id }" 
+        class="doctor-card">
+        <ion-card-content class="doctor-content">
+          <ion-avatar slot="start" class="large-avatar">
+            <img [src]="doctor.image || (doctor.gender === 'Male' ? 'assets/default-male.png' : (doctor.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-doctor.png'))" alt="Doctor Image">
+          </ion-avatar>
+          <ion-label class="doctor-info">
+            <h2 class="doctor-name">{{ doctor.name }}</h2>
+            <p class="doctor-details">{{ doctor.specialty }} - {{ doctor.city }}</p>
+          </ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end" class="theme-icon chevron-icon"></ion-icon>
+        </ion-card-content>
+      </ion-card>
+      <ion-item *ngIf="displayedDoctors.length === 0" class="no-results">
+        <ion-label>No doctors found</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-infinite-scroll (ionInfinite)="loadMoreDoctors($event)" [disabled]="!hasMoreDoctors">
+      <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more doctors...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+
+  <!-- Doctor View -->
+<div *ngIf="isDoctor && !loading">
+  <h2>Users List</h2>
+  <ion-searchbar 
+    placeholder="Search users" 
+    [(ngModel)]="searchQuery" 
+    (ionInput)="filterUsersRealTime()" 
+    class="search-bar">
+  </ion-searchbar>
+  <ion-button *ngIf="isDoctor" expand="block" (click)="searchUsers()">Search</ion-button>
+
+  <ion-list class="users-list">
+    <ion-card 
+      *ngFor="let user of displayedUsers" 
+      button 
+      [routerLink]="['/profile']" 
+      [queryParams]="{ user_id: user.user_id }" 
+      class="user-card">
+      <ion-card-content class="user-content">
+        <ion-avatar slot="start" class="large-avatar">
+          <img [src]="user.image || (user.gender === 'Male' ? 'assets/default-male.png' : (user.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-patient.png'))" alt="User Image">
+        </ion-avatar>
+        <ion-label class="user-info">
+          <h2 class="user-name">{{ user.first_name }} {{ user.last_name }}</h2>
+          <p class="user-details">
+            {{ user.is_doctor && user.specialty ? 'Doctor - ' + user.specialty : 'Patient' }}
+          </p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="theme-icon chevron-icon"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+    <ion-item *ngIf="displayedUsers.length === 0" class="no-results">
+      <ion-label>No users found</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="loadMoreUsers($event)" [disabled]="!hasMoreUsers">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more users...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</div>
+</ion-content>

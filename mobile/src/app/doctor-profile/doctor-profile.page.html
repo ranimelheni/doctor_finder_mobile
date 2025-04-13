@@ -1,0 +1,121 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Doctor Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen>
+  <ion-spinner *ngIf="loading" name="crescent" class="loading-spinner"></ion-spinner>
+
+  <!-- Doctor's Own Profile -->
+  <ion-card *ngIf="!loading && doctor && isOwnProfile" class="doctor-card animate__fadeIn">
+    <ion-card-header class="doctor-header">
+      <ion-avatar class="doctor-avatar">
+        <img [src]="doctor.image || (doctor.gender === 'Male' ? 'assets/default-male.png' : (doctor.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-doctor.png'))" alt="Doctor Image">
+      </ion-avatar>
+      <ion-card-title class="doctor-title">{{ doctor.name }}</ion-card-title>
+      <ion-card-subtitle class="doctor-subtitle">Your Professional Profile</ion-card-subtitle>
+      <ion-label class="doctor-specialty">{{ doctor.specialty }} • {{ doctor.city }}</ion-label>
+    </ion-card-header>
+    <ion-card-content class="doctor-content">
+      <ion-list lines="none" class="info-list">
+        <ion-item class="info-item">
+          <ion-icon name="medkit-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ doctor.specialty }}</ion-label>
+        </ion-item>
+        <ion-item class="info-item">
+          <ion-icon name="location-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ doctor.city }}</ion-label>
+        </ion-item>
+        <ion-item class="info-item">
+          <ion-icon name="home-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ doctor.address || 'Not provided' }}</ion-label>
+        </ion-item>
+        <ion-item class="info-item">
+          <ion-icon name="call-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ doctor.phone || 'Not provided' }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" fill="outline" (click)="toggleActions()" class="toggle-actions-btn">
+        {{ showMoreActions ? 'Hide Actions' : 'More Actions' }}
+        <ion-icon [name]="showMoreActions ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
+      </ion-button>
+      <ion-list *ngIf="showMoreActions" lines="none" class="action-list animate__slideInUp">
+        <ion-item button (click)="openGoogleMaps()" class="action-item">
+          <ion-icon name="map-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>View on Map</ion-label>
+        </ion-item>
+        <ion-item button (click)="callDoctor()" class="action-item">
+          <ion-icon name="call-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Call Now</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Regular Profile -->
+  <ion-card *ngIf="!loading && doctor && !isOwnProfile" class="doctor-card animate__fadeIn">
+    <ion-card-header class="doctor-header">
+      <ion-avatar class="doctor-avatar">
+        <img [src]="doctor.image || (doctor.gender === 'Male' ? 'assets/default-male.png' : (doctor.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-doctor.png'))" alt="Doctor Image">
+      </ion-avatar>
+      <ion-card-title class="doctor-title">{{ doctor.name }}</ion-card-title>
+      <ion-card-subtitle class="doctor-subtitle">{{ doctor.specialty }} • {{ doctor.city }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="doctor-content">
+      <ion-list lines="none" class="info-list">
+        <ion-item class="info-item">
+          <ion-icon name="location-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ doctor.address }}</ion-label>
+        </ion-item>
+        <ion-item class="info-item">
+          <ion-icon name="call-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ doctor.phone }}</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!-- Weekly Calendar -->
+      <div class="week-calendar">
+        <div *ngFor="let day of currentWeek" 
+             class="calendar-day" 
+             [ngClass]="{'available': day.isAvailable, 'unavailable': !day.isAvailable, 'selected': selectedDay === day.date}"
+             (click)="openDaySchedule(day)">
+          <span class="day-name">{{ day.date | date: 'EEE' }}</span>
+          <span class="day-number">{{ day.date | date: 'd' }}</span>
+        </div>
+      </div>
+
+      <ion-button expand="block" fill="outline" (click)="toggleActions()" class="toggle-actions-btn">
+        {{ showMoreActions ? 'Hide Actions' : 'More Actions' }}
+        <ion-icon [name]="showMoreActions ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
+      </ion-button>
+      <ion-list *ngIf="showMoreActions" lines="none" class="action-list animate__slideInUp">
+        <ion-item button (click)="toggleFavorite()" class="action-item">
+          <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>{{ isFavorite ? 'Remove Favorite' : 'Add Favorite' }}</ion-label>
+        </ion-item>
+        <ion-item button (click)="openGoogleMaps()" class="action-item">
+          <ion-icon name="map-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>View on Map</ion-label>
+        </ion-item>
+        <ion-item button (click)="callDoctor()" class="action-item">
+          <ion-icon name="call-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Call Now</ion-label>
+        </ion-item>
+        <ion-item button (click)="sendMessage()" *ngIf="isLoggedIn()" class="action-item">
+          <ion-icon name="chatbubble-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Message</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="!loading && !doctor" class="no-doctor-card animate__fadeIn">
+    <ion-card-content>
+      <p class="ion-text-center">Doctor not found</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

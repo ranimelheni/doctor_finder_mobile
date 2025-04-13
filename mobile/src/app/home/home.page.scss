@@ -1,0 +1,117 @@
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+.loading-spinner {
+  display: block;
+  margin: 20px auto;
+}
+
+.ad-container {
+  padding: 16px 0;
+  .ad-placeholder {
+    background: var(--ion-item-background);
+    border-radius: 8px;
+    margin: 0;
+    height: 100px;
+    p { 
+      color: var(--ion-subtext-color); 
+      font-style: italic; 
+    }
+  }
+}
+
+.search-container {
+  padding: 16px 0;
+  .search-bar {
+    --background: var(--ion-item-background);
+    --color: var(--ion-text-color);
+    --border-radius: 8px;
+    --placeholder-color: var(--ion-subtext-color);
+    --box-shadow: 0 2px 8px var(--ion-shadow-color);
+    margin-bottom: 16px;
+  }
+  
+  .filter-grid {
+    ion-select {
+      background: var(--ion-item-background);
+      color: var(--ion-text-color);
+      border-radius: 8px;
+      padding: 10px;
+      --placeholder-color: var(--ion-subtext-color);
+      --box-shadow: 0 2px 8px var(--ion-shadow-color);
+    }
+  }
+
+  .quick-filters {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+    ion-button {
+      --border-radius: 8px;
+      --color: var(--ion-text-color);
+      --border-color: var(--ion-accent-color);
+      font-size: 12px;
+      padding: 0 8px;
+    }
+  }
+}
+
+.doctors-list, .users-list {
+  .doctor-card, .user-card {
+    background: var(--ion-item-background);
+    border-radius: 12px;
+    margin: 10px 0;
+    box-shadow: 0 4px 8px var(--ion-shadow-color);
+    padding: 10px;
+    min-height: 100px;
+    
+    .doctor-content, .user-content {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .large-avatar {
+      width: 60px;
+      height: 60px;
+      margin-right: 16px;
+      img {
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .doctor-info, .user-info {
+      flex: 1;
+      .doctor-name, .user-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--ion-text-color);
+        margin: 0;
+      }
+      .doctor-details, .user-details {
+        font-size: 16px;
+        color: var(--ion-subtext-color);
+        margin: 4px 0 0 0;
+      }
+      .user-city {
+        font-size: 14px;
+        color: var(--ion-subtext-color);
+        margin: 2px 0 0 0;
+      }
+    }
+
+    .chevron-icon {
+      font-size: 24px;
+      color: var(--ion-icon-color);
+    }
+  }
+
+  .no-results {
+    --background: transparent;
+    ion-label { 
+      color: var(--ion-subtext-color); 
+    }
+  }
+}

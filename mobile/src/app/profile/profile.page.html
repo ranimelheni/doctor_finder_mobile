@@ -1,0 +1,166 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="isDoctor && !isOwnProfile" defaultHref="/home"></ion-back-button>
+      <ion-menu-button *ngIf="isOwnProfile"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen>
+  <!-- Pull-to-Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="crescent"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
+
+  <!-- Mode 1: Doctor's Own Profile -->
+  <ion-card *ngIf="!loading && isDoctor && isOwnProfile && doctorDetails" class="doctor-own-card">
+    <ion-card-header class="doctor-own-header">
+      <ion-avatar class="doctor-own-avatar">
+        <img [src]="doctorDetails.image || (doctorDetails.gender === 'Male' ? 'assets/default-male.png' : (doctorDetails.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-doctor.png'))" alt="Doctor Image">
+      </ion-avatar>
+      <ion-card-title class="doctor-own-title">{{ doctorDetails.name }}</ion-card-title>
+      <ion-card-subtitle class="doctor-own-subtitle">Your Professional Profile</ion-card-subtitle>
+      <ion-label class="doctor-own-specialty">{{ doctorDetails.specialty }} - {{ doctorDetails.city }}</ion-label>
+    </ion-card-header>
+    <ion-card-content class="doctor-own-content">
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="person-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Name: {{ user.first_name }} {{ user.last_name }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Email: {{ user.email }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="medkit-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Specialty: {{ doctorDetails.specialty }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="location-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>City: {{ doctorDetails.city }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="home-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Address: {{ doctorDetails.address || 'Not provided' }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="call-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Phone: {{ doctorDetails.phone || 'Not provided' }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Mode 2: Regular User Own Profile -->
+  <ion-card *ngIf="!loading && !isDoctor && isOwnProfile">
+    <ion-card-header>
+      <ion-card-title>{{ user.first_name }} {{ user.last_name }}</ion-card-title>
+      <ion-card-subtitle>Your Profile</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="person-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Name: {{ user.first_name }} {{ user.last_name }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start" class="theme-icon"></ion-icon>
+          <ion-label>Email: {{ user.email }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <!-- Documents Section -->
+      <ion-list class="documents-list">
+        <ion-list-header>Uploaded Documents</ion-list-header>
+        <!-- Add Document Button (Always on Top) -->
+        <ion-item lines="none">
+          <ion-button expand="block" color="primary" (click)="openAddDocumentModal()">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Add New Document
+          </ion-button>
+        </ion-item>
+        <!-- Document List (First 5 or All if showAll) -->
+        <ion-item *ngFor="let doc of displayedDocuments" (click)="viewDocument(doc.id)" button>
+          <ion-icon name="document-outline" slot="start"></ion-icon>
+          <ion-label>{{ doc.name }}</ion-label>
+          <ion-badge slot="end" [color]="doc.viewed ? 'success' : 'warning'">
+            {{ doc.viewed ? 'Viewed' : 'Pending' }}
+          </ion-badge>
+        </ion-item>
+        <ion-item *ngIf="!loading && documents.length === 0" lines="none">
+          <ion-label>No documents uploaded yet</ion-label>
+        </ion-item>
+        <!-- See More Button -->
+        <ion-item lines="none" *ngIf="documents.length > 5 && !showAll">
+          <ion-button expand="block" fill="outline" (click)="showAll = true">
+            See More ({{ documents.length - 5 }} more)
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Mode 3: Doctor Viewing Patient Profile -->
+  <ion-card *ngIf="!loading && isDoctor && !isOwnProfile" class="patient-profile-card">
+    <ion-card-header class="patient-profile-header">
+      <ion-avatar class="patient-avatar">
+        <img src="assets/default-patient.png" alt="Patient Avatar">
+      </ion-avatar>
+      <ion-card-title class="patient-title">{{ user.first_name }} {{ user.last_name }}</ion-card-title>
+      <ion-card-subtitle class="patient-subtitle">Patient Profile</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="patient-profile-content">
+      <ion-list lines="none" class="patient-info-list">
+        <ion-item class="fade-in">
+          <ion-icon name="person-outline" slot="start" class="info-icon"></ion-icon>
+          <ion-label class="label-title">Name</ion-label>
+          <ion-label class="label-value">{{ user.first_name }} {{ user.last_name }}</ion-label>
+        </ion-item>
+        <ion-item class="fade-in" style="animation-delay: 0.1s;">
+          <ion-icon name="mail-outline" slot="start" class="info-icon"></ion-icon>
+          <ion-label class="label-title">Email</ion-label>
+          <ion-label class="label-value">{{ user.email }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <!-- Documents Visible to Doctor -->
+      <ion-list class="documents-list">
+        <ion-list-header>Patient Documents</ion-list-header>
+        <!-- Document List (First 5 or All if showAll) -->
+        <ion-item *ngFor="let doc of displayedDocuments" (click)="viewDocument(doc.id)" button>
+          <ion-icon name="document-outline" slot="start"></ion-icon>
+          <ion-label>{{ doc.name }}</ion-label>
+          <ion-badge slot="end" [color]="doc.viewed ? 'success' : 'warning'">
+            {{ doc.viewed ? 'Viewed' : 'Pending' }}
+          </ion-badge>
+        </ion-item>
+        <ion-item *ngIf="!loading && documents.length === 0" lines="none">
+          <ion-label>No documents shared with you</ion-label>
+        </ion-item>
+        <!-- See More Button -->
+        <ion-item lines="none" *ngIf="documents.length > 5 && !showAll">
+          <ion-button expand="block" fill="outline" (click)="showAll = true">
+            See More ({{ documents.length - 5 }} more)
+          </ion-button>
+        </ion-item>
+      </ion-list>
+      <ion-button 
+        expand="block" 
+        color="primary" 
+        [routerLink]="['/messages']" 
+        [queryParams]="{ user_id: viewedUserId }"
+        style="margin-top: 20px;">
+        <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+        Message Patient
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

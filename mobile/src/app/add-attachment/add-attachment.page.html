@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/appointment-details/{{ appointmentId }}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Attachment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment [(ngModel)]="attachmentType" (ionChange)="onTypeChange()">
+    <ion-segment-button value="note">
+      <ion-label>Note</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="file">
+      <ion-label>File</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <form (ngSubmit)="addAttachment()">
+    <ion-item>
+      <ion-label position="floating">Name</ion-label>
+      <ion-input [(ngModel)]="attachmentName" name="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea [(ngModel)]="attachmentDescription" name="description"></ion-textarea>
+    </ion-item>
+
+    <ion-item *ngIf="attachmentType === 'file'">
+      <ion-label>Upload File</ion-label>
+      <input type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.txt" />
+    </ion-item>
+
+    <ion-button type="submit" expand="block" [disabled]="!isFormValid()">Add Attachment</ion-button>
+  </form>
+</ion-content>

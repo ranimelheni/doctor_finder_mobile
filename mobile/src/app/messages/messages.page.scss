@@ -1,0 +1,139 @@
+ion-content {
+  --background: url('../../assets/messages.png') no-repeat left top /cover;
+  background-size: 100% 100%; // Stretch to fit height, width adjusts proportionally
+  background-position: center center; // Center the image
+  background-repeat: no-repeat;background-size: 100% 100%;
+  color: var(--ion-text-color);
+  --padding-top: env(safe-area-inset-top);
+  --padding-bottom: env(safe-area-inset-bottom);
+
+  .messages-container {
+    padding: 16px;
+
+    .message-sent,
+    .message-received {
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 70%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message-sent {
+      background: linear-gradient(135deg, #007bff, #0056b3); // Blue gradient for sent messages
+      color: #ffffff;
+      margin-left: auto;
+      align-self: flex-end;
+      .timestamp {
+        color: #e0e0e0;; // Darker gray for white background (better contrast)
+      }
+      
+    }
+
+    .message-received {
+      background: #ffffff; // White background for received messages
+      color: #333333;
+      align-self: flex-start;
+      .timestamp {
+        color: #666666; // Darker gray for white background (better contrast)
+      }
+    }
+
+    .message-text {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .timestamp {
+      display: block;
+      font-size: 12px;
+      //color: #e0e0e0; // Light gray for contrast on blue, visible text
+      margin-top: 4px;
+      text-align: right;
+      opacity: 0.9;
+    }
+
+    .no-messages {
+      text-align: center;
+      padding: 40px 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      ion-icon {
+        font-size: 60px;
+        color: #007bff;
+        margin-bottom: 10px;
+      }
+
+      p {
+        color: #666666;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.loading-spinner {
+  display: block;
+  margin: 20px auto;
+  --color: #007bff; // Match primary color
+}
+
+ion-footer {
+ 
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1); // Subtle shadow for elevation
+
+  ion-toolbar {
+    
+    padding: 8px;
+    display: flex;
+    align-items: center;
+
+    .message-input {
+      
+      
+      --padding-start: 12px;
+      --padding-end: 12px;
+      --padding-top: 10px;
+      --padding-bottom: 10px;
+      border-radius: 10px 10px 5px 5px; 
+      margin-right: 8px;
+      flex-grow: 1;
+      max-height: 120px;
+      border: 2px solid #e0e0e0; // Subtle border
+      transition: all 0.3s ease;
+      font-size: 16px;
+
+      &:focus {
+        border-color: #007bff; // Blue border on focus
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+      }
+    }
+
+    .send-button {
+      --color: #007bff;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      font-size: 20px; // Larger send icon
+      height: 100%;
+    }
+  }
+}
+
+.header-avatar {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+
+  img {
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+  }
+}

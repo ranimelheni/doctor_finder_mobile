@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-menu-button ></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen>
+  <div class="login-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Welcome Back</ion-card-title>
+        <ion-card-subtitle class="ion-text-center">Sign in to continue</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form (ngSubmit)="onLogin()">
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="mail-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input type="email" [(ngModel)]="email" name="email" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="lock-closed-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input type="password" [(ngModel)]="password" name="password" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" type="submit" color="primary" class="login-button" [disabled]="loading">
+            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+            <ion-icon name="log-in-outline" slot="start" *ngIf="!loading"></ion-icon>
+            {{ loading ? '' : 'Login' }}
+          </ion-button>
+        </form>
+
+        <p class="ion-text-center ion-margin-top" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </p>
+
+        <p class="ion-text-center ion-margin-top">
+          Don't have an account? 
+          <a routerLink="/register" class="register-link">Register</a>
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

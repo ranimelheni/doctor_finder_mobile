@@ -1,0 +1,30 @@
+ion-content {
+    --padding-top: 20px;
+    --padding-bottom: 20px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+  }
+  
+  ion-item {
+    margin-bottom: 16px;
+  }
+  
+  ion-text[color="danger"] {
+    font-size: 12px;
+    margin-left: 16px;
+    margin-top: 4px;
+  }
+  
+  ion-button {
+    margin-top: 20px;
+  }
+  
+  ion-icon[slot="end"] {
+    margin-left: 10px; // Espacement entre les icônes à droite
+  }
+  
+  ion-item[button] {
+    --background: transparent;
+    --border-color: var(--ion-color-light);
+    cursor: pointer;
+  }

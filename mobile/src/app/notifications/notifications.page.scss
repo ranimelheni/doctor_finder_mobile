@@ -1,0 +1,39 @@
+ion-content.ion-padding {
+    --background: var(--ion-background-color);
+    padding-top: var(--ion-safe-area-top, 0);
+    padding-bottom: var(--ion-safe-area-bottom, 0);
+  }
+  
+  ion-list {
+    .read {
+      --background: var(--ion-background-color);
+      opacity: 0.7;
+    }
+    ion-item {
+      --border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 4px var(--ion-shadow-color);
+      transition: all 0.3s ease; // Smooth transition for height changes
+      max-height: 100px; // Collapsed height
+      contain: content; // Ensure content stays within bounds
+      
+      &.expanded {
+        max-height: none; // Remove height restriction when expanded
+        height: auto; // Let the content dictate the height
+      }
+  
+      ion-label {
+        white-space: normal; // Allow text to wrap naturally
+        word-wrap: break-word; // Break long words if needed
+        overflow-wrap: break-word; // Ensure wrapping in all browsers
+        padding: 8px; // Add padding for better spacing
+      }
+    }
+    ion-icon {
+      font-size: 20px;
+    }
+    ion-button {
+      --padding-start: 0;
+      --padding-end: 0;
+    }
+  }

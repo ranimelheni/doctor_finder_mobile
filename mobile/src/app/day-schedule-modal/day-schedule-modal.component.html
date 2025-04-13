@@ -1,0 +1,29 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>{{ doctorName }}<br><small>{{ selectedDate | date: 'EEEE, MMMM d' }}</small></ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading" name="crescent" class="modal-loading-spinner"></ion-spinner>
+  <ion-list *ngIf="!loading" class="time-slots-list">
+    <ion-item *ngFor="let slot of timeSlots" 
+              [disabled]="!slot.available" 
+              (click)="selectTime(slot.time)" 
+              [ngClass]="{'selected': selectedTime === slot.time, 'unavailable': !slot.available}"
+              class="time-slot-item animate__fadeIn">
+      <ion-label>{{ slot.time }}</ion-label>
+      <ion-icon *ngIf="slot.available" name="checkmark-circle" slot="end" color="success"></ion-icon>
+      <ion-icon *ngIf="!slot.available" name="close-circle" slot="end" color="danger"></ion-icon>
+    </ion-item>
+  </ion-list>
+  <ion-button expand="block" (click)="bookAppointment()" [disabled]="!selectedTime || loading" class="book-btn">
+    <ion-label>Book Appointment</ion-label>
+    <ion-icon name="calendar-outline"></ion-icon>
+  </ion-button>
+</ion-content>

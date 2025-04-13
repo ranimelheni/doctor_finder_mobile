@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Consultation History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Content -->
+  <div class="content" *ngIf="!isLoading">
+    <ion-list class="consultations-list">
+      <ion-list-header class="consultations-header">
+        <ion-label>Completed Consultations</ion-label>
+      </ion-list-header>
+
+      <ion-item 
+        *ngFor="let appointment of appointments" 
+        lines="none" 
+        class="consultation-item" 
+        (click)="viewDetails(appointment.id)"
+        button
+      >
+        <ion-card class="consultation-card">
+          <ion-card-header class="card-header">
+            <ion-card-title class="appointment-title">
+              Appointment #{{ appointment.id }}
+            </ion-card-title>
+            <ion-card-subtitle class="appointment-date">
+              {{ appointment.appointment_date | date:'medium' }}
+            </ion-card-subtitle>
+          </ion-card-header>
+          
+          <ion-card-content class="card-content">
+            <div class="info-item">
+              <ion-icon name="medkit-outline" slot="start" class="info-icon"></ion-icon>
+              <div class="info-text">
+                <span class="label">Doctor:</span>
+                <span class="value">{{ appointment.doctor_name }}</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <ion-icon name="calendar-outline" slot="start" class="info-icon"></ion-icon>
+              <div class="info-text">
+                <span class="label">Date:</span>
+                <span class="value">{{ appointment.appointment_date | date:'short' }}</span>
+              </div>
+            </div>
+            <!-- Added custom arrow inside the card -->
+            <ion-icon name="chevron-forward-outline" class="detail-arrow"></ion-icon>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+
+      <ion-item lines="none" class="no-results" *ngIf="appointments.length === 0">
+        <ion-label>No completed consultations found</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

@@ -1,0 +1,44 @@
+
+  .login-container {
+
+  
+    ion-card {
+      
+      ion-card-header {
+        
+        ion-card-title {
+          
+          color: var(--ion-text-color);
+          
+        }
+        ion-card-subtitle {
+         
+          color: var(--ion-subtext-color);
+          
+        }
+      }
+  
+    
+    }
+  }
+  
+  .input-item {
+    
+    ion-label {
+      color: var(--ion-subtext-color);
+    }
+    ion-icon.theme-icon {
+      color: var(--ion-icon-color);
+    }
+  }
+  
+
+  
+  .register-link {
+    color: var(--ion-accent-color);
+    
+  }
+  
+  ion-text {
+    color: var(--ion-text-color); /* For error messages or other text */
+  }

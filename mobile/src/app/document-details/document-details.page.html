@@ -1,0 +1,122 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button  [defaultHref]="getProfileUrl()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Document Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
+
+  <ion-card *ngIf="!loading && document">
+    <ion-card-header>
+      <ion-card-title>{{ document.name }}</ion-card-title>
+      <ion-card-subtitle>Document Details</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item *ngIf="!isDoctor">
+          <ion-icon name="medkit-outline" slot="start"></ion-icon>
+          <ion-label>Assigned to: {{ document.doctor_name }}</ion-label>
+        </ion-item>
+        <ion-item *ngIf="isDoctor">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label>Uploaded by: {{ document.user_name }}</ion-label>
+        </ion-item>
+        <ion-item *ngIf="document.description">
+          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+          <ion-label>Description: {{ document.description }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="eye-outline" slot="start"></ion-icon>
+          <ion-label>Status: </ion-label>
+          <ion-badge slot="end" [color]="document.viewed ? 'success' : 'warning'">
+            {{ document.viewed ? 'Viewed' : 'Pending' }}
+          </ion-badge>
+        </ion-item>
+      </ion-list>
+
+      <!-- Notes Section -->
+      <ion-list lines="none" class="notes-section" style="margin-top: 20px;">
+        <ion-list-header>Doctor Notes</ion-list-header>
+        <ion-item *ngIf="document.notes.length === 0">
+          <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+          <ion-label>No notes added yet</ion-label>
+        </ion-item>
+        <ion-item *ngFor="let note of document.notes">
+          <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+          <ion-label *ngIf="editingNoteId !== note.id || !isDoctor">
+            {{ note.content }} <br>
+            <small>{{ note.created_at | date:'medium' }}</small>
+          </ion-label>
+          <ion-textarea 
+            *ngIf="editingNoteId === note.id && isDoctor" 
+            [(ngModel)]="editedNoteContent" 
+            rows="3" 
+            auto-grow="true">
+          </ion-textarea>
+          <ion-buttons slot="end" *ngIf="isDoctor">
+            <ion-button 
+              fill="clear" 
+              (click)="startEditingNote(note)" 
+              *ngIf="editingNoteId !== note.id">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-button>
+            <ion-button 
+              fill="clear" 
+              (click)="saveEditedNote(note.id)" 
+              *ngIf="editingNoteId === note.id" 
+              [disabled]="actionInProgress">
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </ion-button>
+            <ion-button 
+              fill="clear" 
+              (click)="cancelEditing()" 
+              *ngIf="editingNoteId === note.id" 
+              [disabled]="actionInProgress">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+            <ion-button 
+              fill="clear" 
+              (click)="deleteNote(note.id)" 
+              *ngIf="editingNoteId !== note.id" 
+              [disabled]="actionInProgress">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+        <ion-item *ngIf="isDoctor">
+          <ion-textarea 
+            [(ngModel)]="newNote" 
+            placeholder="Add a new note" 
+            rows="3" 
+            auto-grow="true">
+          </ion-textarea>
+        </ion-item>
+        <ion-item lines="none" *ngIf="isDoctor">
+          <ion-button 
+            expand="block" 
+            color="primary" 
+            (click)="addNote()" 
+            [disabled]="!newNote.trim() || actionInProgress">
+            <ion-spinner *ngIf="actionInProgress" name="crescent"></ion-spinner>
+            {{ actionInProgress ? 'Adding...' : 'Add Note' }}
+          </ion-button>
+        </ion-item>
+      </ion-list>
+
+      <ion-button expand="block" color="primary" (click)="downloadFile()" style="margin-top: 20px;">
+        <ion-icon name="download-outline" slot="start"></ion-icon>
+        Download File
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="!loading && !document">
+    <ion-card-content>
+      <ion-label>Document not found or unauthorized access</ion-label>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

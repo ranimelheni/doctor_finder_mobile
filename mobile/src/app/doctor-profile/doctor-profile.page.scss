@@ -1,0 +1,190 @@
+ion-header {
+  ion-toolbar {
+    --background: var(--ion-toolbar-background);
+    --color: var(--ion-text-color);
+  }
+}
+
+ion-content.ion-padding {
+  --background: var(--ion-background-color);
+}
+
+.loading-spinner {
+  display: block;
+  margin: 40px auto;
+  --color: var(--ion-accent-color);
+}
+
+.doctor-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--ion-shadow-color);
+  overflow: hidden;
+  margin: 16px;
+  background: var(--ion-card-background);
+
+  .doctor-header {
+    text-align: center;
+    padding: 20px 16px 10px;
+
+    .doctor-avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 12px;
+      border: 3px solid var(--ion-accent-color);
+      border-radius: 50%;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    .doctor-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin-bottom: 4px;
+    }
+
+    .doctor-subtitle {
+      font-size: 16px;
+      color: var(--ion-subtext-color);
+      font-weight: 500;
+    }
+
+    .doctor-specialty {
+      font-size: 14px;
+      color: var(--ion-accent-color);
+      margin-top: 6px;
+    }
+  }
+
+  .doctor-content {
+    padding: 16px;
+
+    .info-list {
+      margin-bottom: 20px;
+
+      .info-item {
+        --padding-start: 0;
+        margin-bottom: 8px;
+
+        .theme-icon {
+          color: var(--ion-accent-color);
+          margin-right: 12px;
+          font-size: 20px;
+        }
+
+        ion-label {
+          font-size: 16px;
+          color: var(--ion-text-color);
+        }
+      }
+    }
+
+    .week-calendar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 8px;
+      margin: 20px 0;
+
+      .calendar-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border-radius: 12px;
+        min-height: 60px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px var(--ion-shadow-color);
+
+        &.available {
+          background: rgb(34, 165, 34); /* Green */
+          color: #ffffff;
+
+          
+        }
+
+        &.unavailable {
+          background: var(--ion-color-danger); /* Red */
+          color: #ffffff;
+          opacity: 0.8;
+          cursor: not-allowed;
+        }
+
+
+        .day-name {
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+
+        .day-number {
+          font-size: 18px;
+          font-weight: 600;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    .toggle-actions-btn {
+      margin: 16px 0;
+      --border-radius: 12px;
+      --border-color: var(--ion-accent-color);
+      --color: var(--ion-text-color);
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    .action-list {
+      margin-top: 10px;
+
+      .action-item {
+        --padding-start: 0;
+        margin-bottom: 8px;
+        transition: background 0.2s ease;
+
+        &:hover {
+          --background: var(--ion-item-background);
+        }
+
+        .theme-icon {
+          color: var(--ion-accent-color);
+          margin-right: 12px;
+          font-size: 20px;
+        }
+
+        ion-label {
+          font-size: 16px;
+          color: var(--ion-text-color);
+        }
+      }
+    }
+  }
+}
+
+.no-doctor-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--ion-shadow-color);
+  margin: 16px;
+  text-align: center;
+  background: var(--ion-card-background);
+
+  p {
+    font-size: 18px;
+    color: var(--ion-subtext-color);
+    padding: 20px;
+  }
+}
+
+/* Animations */
+.animate__fadeIn {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.animate__slideInUp {
+  animation: slideInUp 0.3s ease-out;
+}

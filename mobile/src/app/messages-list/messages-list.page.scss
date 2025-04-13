@@ -1,0 +1,59 @@
+ion-content {
+  --background: var(--ion-background-color);
+  color: var(--ion-text-color);
+
+  ion-list {
+    background: var(--ion-background-color);
+
+    ion-item {
+      --background: var(--ion-item-background);
+      --color: var(--ion-text-color);
+      cursor: pointer;
+
+      ion-avatar {
+        margin-right: 12px;
+        img {
+          border-radius: 50%;
+        }
+      }
+
+      ion-label {
+        h2 {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        p {
+          font-size: 14px;
+          color: var(--ion-subtext-color);
+
+          &.unread {
+            font-weight: bold;
+            color: var(--ion-text-color);
+          }
+        }
+      }
+
+      .timestamp {
+        font-size: 12px;
+        color: var(--ion-subtext-color);
+      }
+    }
+
+    .no-conversations {
+      text-align: center;
+      padding: 20px;
+      color: var(--ion-subtext-color);
+    }
+  }
+
+  .loading-spinner {
+    display: block;
+    margin: 20px auto;
+  }
+
+  /* Style for refresher (optional) */
+  ion-refresher {
+    --color: var(--ion-color-primary); /* Matches primary color */
+  }
+}

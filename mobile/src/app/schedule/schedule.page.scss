@@ -1,0 +1,107 @@
+
+  
+  .loading-spinner {
+    display: block;
+    margin: 20px auto;
+  }
+  
+  .calendar-container {
+    padding: 10px;
+  
+    .calendar-nav {
+      margin-bottom: 15px;
+      align-items: center;
+  
+      .week-title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        
+      }
+  
+      ion-button {
+        --border-radius: 8px;
+      }
+    }
+  
+    .calendar-grid {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+  
+      .calendar-header {
+        background: #3880ff;
+        color: #ffffff;
+        font-weight: 600;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+  
+        ion-col {
+          padding: 8px;
+          border-right: 1px solid rgba(255, 255, 255, 0.2);
+  
+          &:last-child {
+            border-right: none;
+          }
+  
+          ion-label {
+            display: block;
+            font-size: 14px;
+            line-height: 1.4; // Adjusted for shorter text
+          }
+        }
+  
+        .time-col {
+          background: #2f6ed8;
+          font-size: 16px;
+        }
+      }
+  
+      .time-row {
+        border-bottom: 1px solid #eee;
+  
+        &:last-child {
+          border-bottom: none;
+        }
+  
+        ion-col {
+          padding: 8px;
+          text-align: center;
+          border-right: 1px solid #eee;
+  
+          &:last-child {
+            border-right: none;
+          }
+  
+          &.time-slot {
+            background: #f9f9f9;
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+          }
+  
+          .slot-content {
+            font-size: 12px;
+            padding: 6px;
+            border-radius: 4px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-wrap: break-word;
+          }
+  
+          .free-slot {
+            background: #e6ffe6;
+            color: #28a745;
+          }
+  
+          .booked-slot {
+            background: #ffe6e6;
+            color: #dc3545;
+          }
+        }
+      }
+    }
+  }

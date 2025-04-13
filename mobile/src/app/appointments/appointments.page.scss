@@ -1,0 +1,107 @@
+
+ion-content {
+  --background: var(--ion-background-color); // Uses #1f1f1f (dark) or #f4f4f4 (light)
+  color: var(--ion-text-color); // Uses #ffffff (dark) or #333333 (light)
+
+  .appointments-container {
+    padding: 16px;
+
+    .appointment-card {
+      position: relative;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--ion-shadow-color); // Uses rgba(0, 0, 0, 0.3) (dark) or rgba(0, 0, 0, 0.1) (light)
+      margin-bottom: 16px;
+      background: var(--ion-card-background); // Uses #2a2a2a (dark) or #ffffff (light)
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      ion-card-header {
+        padding: 16px;
+
+        ion-card-title {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--ion-text-color); // Uses #ffffff (dark) or #333333 (light)
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        ion-card-subtitle {
+          font-size: 14px;
+          color: var(--ion-subtext-color); // Uses #aaaaaa (dark) or #666666 (light)
+          margin-top: 4px;
+        }
+      }
+
+      ion-card-content {
+        padding: 0 16px 16px 16px;
+
+        ion-chip {
+          &.pending {
+            --background: var(--ion-color-warning);
+            --color: #fff;
+          }
+          &.confirmed {
+            --background: var(--ion-color-success);
+            --color: #fff;
+          }
+          &.completed {
+            --background: var(--ion-color-medium);
+            --color: #fff;
+          }
+          &.cancelled {
+            --background: var(--ion-color-danger);
+            --color: #fff;
+          }
+
+          ion-icon {
+            margin-right: 6px;
+            color: var(--ion-icon-color); // Uses #ffffff (dark) or #333333 (light)
+          }
+        }
+      }
+
+      .delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        --padding-start: 8px;
+        --padding-end: 8px;
+        --color: var(--ion-color-danger); // Ensure delete icon uses danger color
+      }
+    }
+
+    .no-appointments-card {
+      text-align: center;
+      background: var(--ion-card-background); // Uses #2a2a2a (dark) or #ffffff (light)
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--ion-shadow-color); // Uses rgba(0, 0, 0, 0.3) (dark) or rgba(0, 0, 0, 0.1) (light)
+      margin: 16px;
+
+      ion-card-content {
+        padding: 24px;
+
+        .no-appointments-icon {
+          font-size: 48px;
+          color: var(--ion-subtext-color); // Uses #aaaaaa (dark) or #666666 (light)
+          margin-bottom: 12px;
+        }
+
+        p {
+          font-size: 16px;
+          color: var(--ion-subtext-color); // Uses #aaaaaa (dark) or #666666 (light)
+        }
+      }
+    }
+  }
+}
+
+.loading-spinner {
+  display: block;
+  margin: 20px auto;
+  color: var(--ion-accent-color); // Uses #1e90ff for both themes
+}

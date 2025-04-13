@@ -1,0 +1,53 @@
+ion-menu {
+  --width: 250px;
+  z-index: 9999;
+}
+
+ion-item {
+  --background: var(--ion-item-background);
+  color: var(--ion-text-color);
+}
+
+.theme-icon {
+  color: var(--ion-icon-color) !important;
+}
+
+.custom-tab-bar {
+  --background: var(--ion-tab-bar-background);
+  padding: 5px 0;
+}
+
+ion-tab-button {
+  --color: var(--ion-subtext-color); /* Unselected color */
+  transition: color 0.2s ease;
+  position: relative; /* For badge positioning */
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  ion-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  &.selected {
+    color: #1e90ff; 
+    ion-icon,
+    ion-label {
+      color: #1e90ff; 
+    }
+  }
+
+  .notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    color: transparent; /* Hide any text */
+  }
+}

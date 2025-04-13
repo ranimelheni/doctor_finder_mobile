@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/messages-list"></ion-back-button>
+    </ion-buttons>
+    <ion-avatar slot="start" *ngIf="otherUserAvatar" class="header-avatar">
+      <img [src]="otherUserAvatar" alt="User Avatar">
+    </ion-avatar>
+    <ion-title>{{ otherUserName || 'Chat' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
+  <div class="messages-container" *ngIf="!loading">
+    <div *ngFor="let message of messages" [ngClass]="{'message-sent': message.sender_id === currentUser.id, 'message-received': message.sender_id !== currentUser.id}">
+      <p class="message-text">{{ message.message_text }}</p>
+      <span class="timestamp">{{ message.sent_at | date:'short' }}</span>
+    </div>
+    <div *ngIf="messages.length === 0" class="no-messages">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+      <p>No messages yet. Start a conversation!</p>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-textarea 
+      #messageInput
+      [(ngModel)]="newMessage" 
+      placeholder="Type a message..." 
+      auto-grow="true" 
+      rows="1" 
+      class="message-input"
+      (ionFocus)="onInputFocus()"
+      (ionBlur)="onInputBlur()">
+    </ion-textarea>
+    <ion-button slot="end" fill="clear" (click)="sendMessage()" class="send-button">
+      <ion-icon name="send-outline" color="primary"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

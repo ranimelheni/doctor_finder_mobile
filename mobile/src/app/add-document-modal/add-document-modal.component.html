@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Document</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Document Name</ion-label>
+      <ion-input [(ngModel)]="document.name" required placeholder="e.g., Blood Test Results"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea [(ngModel)]="document.description" rows="3" placeholder="Optional description"></ion-textarea>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Assign to Doctor</ion-label>
+    </ion-item>
+    <ion-searchbar 
+      [(ngModel)]="searchQuery" 
+      placeholder="Search for a doctor by name" 
+      (ionInput)="searchDoctors($event)" 
+      debounce="300">
+    </ion-searchbar>
+    <ion-item *ngIf="filteredDoctors.length > 0 || searchQuery.length > 0">
+      <ion-select 
+        [(ngModel)]="document.doctor_id" 
+        placeholder="Select a Doctor" 
+        required 
+        interface="popover">
+        <ion-select-option *ngFor="let doctor of filteredDoctors" [value]="doctor.id">
+          {{ doctor.name }} ({{ doctor.specialty }})
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="searchQuery.length > 0 && filteredDoctors.length === 0" lines="none">
+      <ion-label>No doctors found</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Upload File</ion-label>
+      <input type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.jpg,.png,.txt" required />
+    </ion-item>
+  </ion-list>
+  <ion-button 
+    expand="block" 
+    color="primary" 
+    (click)="uploadDocument()" 
+    [disabled]="!document.name || !document.doctor_id || !document.file || uploading">
+    <ion-spinner *ngIf="uploading" name="crescent"></ion-spinner>
+    {{ uploading ? 'Uploading...' : 'Upload' }}
+  </ion-button>
+</ion-content>

@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="isDoctor" defaultHref="/consultations"></ion-back-button>
+      <ion-back-button *ngIf="!isDoctor" defaultHref="/history"></ion-back-button>
+
+    </ion-buttons>
+    <ion-title>Appointment Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Content (Hidden While Loading) -->
+  <div class="content" *ngIf="!isLoading">
+    <!-- Appointment Card -->
+    <ion-card class="appointment-card" *ngIf="appointment">
+      <ion-card-header>
+        <ion-card-title>Appointment #{{ appointment.id }}</ion-card-title>
+        <ion-card-subtitle>{{ appointment.appointment_date | date:'medium' }}</ion-card-subtitle>
+      </ion-card-header>
+<!--doctor-->
+      <ion-card-content *ngIf="isDoctor">
+        <div class="info-item">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <span class="label">Patient:</span>
+          <span class="value">{{ appointment.patient_name }}</span>
+        </div>
+        <div class="info-item">
+          <ion-icon name="id-card-outline" slot="start"></ion-icon>
+          <span class="label">Patient ID:</span>
+          <span class="value">{{ appointment.user_id }}</span>
+        </div>
+      </ion-card-content>
+<!--patient-->
+      <ion-card-content *ngIf="!isDoctor">
+        <div class="info-item">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <span class="label">Doctor: </span>
+          <span class="value">{{ appointment.doctor_name }}</span>
+        </div>
+        <div class="info-item">
+          <ion-icon name="id-card-outline" slot="start"></ion-icon>
+          <span class="label">Doctor ID:</span>
+          <span class="value">{{ appointment.doctor_id }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Attachments List -->
+    <ion-list class="attachments-list">
+      <ion-list-header>
+        <ion-label>Attachments</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let attachment of attachments" lines="none" class="attachment-item" [class.expanded]="expandedAttachments[attachment.id]">
+        <div class="attachment-content">
+          <h3 class="attachment-title">{{ attachment.name }}</h3>
+        
+          <p *ngIf="attachment.type === 'note' && !expandedAttachments[attachment.id]" class="description">
+            {{ attachment.description | slice:0:50 }}<span *ngIf="needsSeeMore(attachment.description)">...</span>
+          </p>
+          <p *ngIf="attachment.type === 'note' && expandedAttachments[attachment.id]" class="description">
+            {{ attachment.description }}
+          </p>
+          <p *ngIf="attachment.type === 'file'" class="description">
+            {{ attachment.description || 'No description' }}
+          </p>
+          <div class="button-group">
+            <ion-button *ngIf="attachment.type === 'file'" fill="outline" size="small" (click)="downloadAttachment(attachment)">
+              <ion-icon name="download-outline" slot="start"></ion-icon>
+              Download
+            </ion-button>
+            <ion-button *ngIf="attachment.type === 'note' && needsSeeMore(attachment.description)" fill="outline" size="small" (click)="toggleDescription(attachment.id)">
+              <ion-icon [name]="expandedAttachments[attachment.id] ? 'chevron-up-outline' : 'chevron-down-outline'" slot="start"></ion-icon>
+              {{ expandedAttachments[attachment.id] ? 'See Less' : 'See More' }}
+            </ion-button>
+            <ion-button *ngIf="isDoctor" fill="outline" size="small" color="danger" (click)="deleteAttachment(attachment.id)">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Delete
+            </ion-button>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="attachments.length === 0">
+        <ion-label>No attachments found</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!-- Fixed Add Button -->
+    <ion-fab *ngIf="isDoctor" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button color="primary" (click)="navigateToAddAttachment()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-content>

@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar >
+    <ion-title>Confirm Your Appointment</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="cancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="confirmation-container">
+    <ion-card class="confirmation-card">
+      <ion-card-header class="confirmation-header">
+        <ion-icon name="calendar-outline" class="header-icon"></ion-icon>
+        <ion-card-title>Appointment Details</ion-card-title>
+        <ion-card-subtitle>Please review and confirm</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list lines="full" class="details-list">
+          <ion-item>
+            <ion-icon name="person-outline" slot="start" class="detail-icon"></ion-icon>
+            <ion-label class="detail-label">Doctor</ion-label>
+            <ion-label class="detail-value">{{ doctorName }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="calendar-outline" slot="start" class="detail-icon"></ion-icon>
+            <ion-label class="detail-label">Date</ion-label>
+            <ion-label class="detail-value">{{ appointmentDate | date:'EEE, MMM d, yyyy' }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="time-outline" slot="start" class="detail-icon"></ion-icon>
+            <ion-label class="detail-label">Time</ion-label>
+            <ion-label class="detail-value">{{ appointmentDate | date:'HH:mm' }}</ion-label>
+          </ion-item>
+        </ion-list>
+        <div class="button-group">
+          <ion-button expand="block" color="success" (click)="confirm()">
+            <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+            Confirm Booking
+          </ion-button>
+          <ion-button expand="block" color="medium" fill="outline" (click)="cancel()">
+            <ion-icon name="close-outline" slot="start"></ion-icon>
+            Cancel
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

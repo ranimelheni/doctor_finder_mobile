@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-menu-button ></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Register</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen>
+  <div class="register-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Create Account</ion-card-title>
+        <ion-card-subtitle class="ion-text-center">Join us today</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form (ngSubmit)="onRegister()">
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="person-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">First Name</ion-label>
+            <ion-input type="text" [(ngModel)]="firstName" name="firstName" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="id-card-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">Last Name</ion-label>
+            <ion-input type="text" [(ngModel)]="lastName" name="lastName" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="mail-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input type="email" [(ngModel)]="email" name="email" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="lock-closed-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input type="password" [(ngModel)]="password" name="password" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-item lines="full" class="input-item">
+            <ion-icon name="lock-closed-outline" slot="start" class="theme-icon"></ion-icon>
+            <ion-label position="floating">Confirm Password</ion-label>
+            <ion-input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required clearInput></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" type="submit" color="primary" class="register-button" [disabled]="loading">
+            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+            <ion-icon name="person-add-outline" slot="start" *ngIf="!loading"></ion-icon>
+            {{ loading ? '' : 'Register' }}
+          </ion-button>
+        </form>
+
+        <p class="ion-text-center ion-margin-top" *ngIf="errorMessage" style="color: red;">
+          {{ errorMessage }}
+        </p>
+
+        <p class="ion-text-center ion-margin-top">
+          Already have an account? 
+          <a routerLink="/login" class="login-link">Login</a>
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Book Appointment with {{ doctorName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
+
+  <div *ngIf="!loading" class="calendar-container">
+    <!-- Navigation -->
+     
+    <ion-grid class="calendar-nav">
+      <ion-row>
+        <ion-col  class="week-title">
+          <ion-label>{{ daysOfWeek[0] | date:'MMM d' }} - {{ daysOfWeek[5] | date:'MMM d, yyyy' }}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4">
+          <ion-button fill="outline"  (click)="previousWeek()">
+            <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
+            Prev
+          </ion-button>
+        </ion-col>
+        <ion-col size="4"></ion-col>
+        
+        <ion-col size="4">
+          <ion-button fill="outline"  (click)="nextWeek()">
+            Next
+            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Calendar Grid -->
+    <ion-grid class="calendar-grid">
+      <ion-row class="calendar-header">
+        <ion-col size="2" class="time-col">
+          <ion-label>Time</ion-label>
+        </ion-col>
+        <ion-col *ngFor="let day of daysOfWeek" size="10/6" class="day-header"> <!-- Changed to 6 columns -->
+          <ion-label>{{ day | date:'EEE' | slice:0:2 }}<br>{{ day | date:'d' }}</ion-label>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngFor="let hour of hours" class="time-row">
+        <ion-col size="2" class="time-slot">
+          <ion-label>{{ hour }}</ion-label>
+        </ion-col>
+        <ion-col *ngFor="let day of daysOfWeek" size="10/6" class="appointment-slot"> <!-- Changed to 6 columns -->
+          <div
+            [ngClass]="isSlotAvailable(day, hour) ? 'free-slot' : 'booked-slot'"
+            class="slot-content"
+            [class.clickable]="isSlotAvailable(day, hour)"
+            (click)="isSlotAvailable(day, hour) && bookSlot(getSlot(day, hour))">
+            {{ isSlotAvailable(day, hour) ? 'Free' : 'Booked' }}
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Appointments</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
+
+  <div class="appointments-container" *ngIf="!loading">
+    <ion-card *ngFor="let appointment of appointments" class="appointment-card">
+      <ion-card-header>
+        <ion-card-title>
+          {{ appointment.doctorName || 'Unknown Doctor' }} (ID: {{ appointment.doctor_id }})
+        </ion-card-title>
+        <ion-card-subtitle>{{ appointment.appointment_date | date:'MMMM d, yyyy, h:mm a' }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-chip color="{{ appointment.status | lowercase }}">
+          <ion-icon name="ellipse"></ion-icon>
+          <ion-label>{{ appointment.status }}</ion-label>
+        </ion-chip>
+        <ion-button class="delete-btn" slot="end" color="danger" fill="clear" (click)="deleteAppointment(appointment.id)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-card-content>
+      
+    </ion-card>
+
+    <ion-card *ngIf="appointments.length === 0" class="no-appointments-card">
+      <ion-card-content>
+        <ion-icon name="calendar-outline" class="no-appointments-icon"></ion-icon>
+        <p>No appointments found</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
