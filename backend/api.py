@@ -90,7 +90,6 @@ class Appointment(db.Model):
     status = db.Column(db.Enum('Pending', 'Confirmed', 'Completed', 'Cancelled'), default='Pending')
     patient = db.relationship('User', backref='appointments', lazy='joined')  # Patient relationship
     doctor = db.relationship('Doctor', backref='appointments', lazy='joined')  # Doctor relationship
-
     def to_dict(self, include_patient_name=False, include_doctor_name=False):
         base_dict = {
             'id': self.id,
@@ -98,6 +97,7 @@ class Appointment(db.Model):
             'doctor_id': self.doctor_id,
             'appointment_date': self.appointment_date.isoformat(),
             'status': self.status,
+            'patient_name': f"{self.patient.first_name} {self.patient.last_name}" if self.patient else 'Unknown'
         }
         if include_patient_name and self.patient:
             base_dict['patient_name'] = f"{self.patient.first_name} {self.patient.last_name}"
@@ -393,8 +393,7 @@ def get_doctor_appointments():
         return jsonify({'message': 'Unauthorized: You can only view your own appointments'}), 403
 
     # Build the query
-    query = Appointment.query.filter_by(doctor_id=doctor_id)
-    
+    query = Appointment.query.filter(Appointment.doctor_id == doctor_id,Appointment.status != "Cancelled")    
     if appointment_id:
         # Return a single appointment with patient name if appointment_id is provided
         appointment = query.filter_by(id=appointment_id).first()
@@ -497,7 +496,7 @@ def book_appointment():
     if user.is_doctor and user.doctor_id == doctor_id:
         return jsonify({'message': 'Doctors cannot book their own appointments'}), 403
 
-    if Appointment.query.filter_by(doctor_id=doctor_id, appointment_date=appointment_date).first():
+    if Appointment.query.filter(Appointment.doctor_id==doctor_id, Appointment.appointment_date==appointment_date,Appointment.status !="Cancelled").first():
         return jsonify({'message': 'This time slot is already booked'}), 409
 
     new_appointment = Appointment(
@@ -860,7 +859,8 @@ def get_weekly_availability(doctor_id):
     appointments = Appointment.query.filter(
         Appointment.doctor_id == doctor_id,
         Appointment.appointment_date >= week_start,
-        Appointment.appointment_date <= week_end
+        Appointment.appointment_date <= week_end,
+        Appointment.status != "Cancelled"
     ).all()
     
     availability = []
@@ -897,7 +897,8 @@ def get_day_schedule(doctor_id):
     appointments = Appointment.query.filter(
         Appointment.doctor_id == doctor_id,
         Appointment.appointment_date >= day_start,
-        Appointment.appointment_date <= day_end
+        Appointment.appointment_date <= day_end,
+        Appointment.status != "Cancelled"
     ).all()
     
     slots = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"]
@@ -1263,5 +1264,80 @@ def edit_profile():
         'doctor': doctor.to_dict() if user.is_doctor and user.doctor_id else None
     }), 200
 
+
+@app.route('/api/appointment/update_status', methods=['POST'])
+@jwt_required()
+def update_appointment_status():
+    current_user_id = int(get_jwt_identity())
+    user = db.session.get(User, current_user_id)
+    if not user or not user.is_doctor or not user.doctor_id:
+        return jsonify({'message': 'Only doctors can update appointment status'}), 403
+
+    data = request.get_json()
+    appointment_id = data.get('appointment_id')
+    new_status = data.get('status')  # Expected: 'Confirmed', 'Cancelled', or 'Completed'
+
+    if not appointment_id or not new_status:
+        return jsonify({'message': 'appointment_id and status are required'}), 400
+
+    if new_status not in ['Confirmed', 'Cancelled', 'Completed']:
+        return jsonify({'message': 'Invalid status. Must be Confirmed, Cancelled, or Completed'}), 400
+
+    appointment = db.session.get(Appointment, appointment_id)
+    if not appointment:
+        return jsonify({'message': 'Appointment not found'}), 404
+
+    # Vérifier que le rendez-vous appartient au médecin
+    if appointment.doctor_id != user.doctor_id:
+        return jsonify({'message': 'You are not authorized to update this appointment'}), 403
+
+    # Mettre à jour le statut
+    appointment.status = new_status
+    db.session.commit()
+
+    # Ajouter une notification pour le patient
+    patient_message = f"Your appointment on {appointment.appointment_date.strftime('%Y-%m-%d %H:%M')} has been {new_status.lower()} by Dr. {user.first_name} {user.last_name}."
+    add_notification(appointment.user_id, patient_message)
+
+    return jsonify({'message': f'Appointment status updated to {new_status}'}), 200
+# Endpoint pour vérifier les rendez-vous passés et envoyer des notifications
+@app.route('/api/appointments/check_past', methods=['GET'])
+@jwt_required()
+def check_past_appointments():
+    current_user_id = int(get_jwt_identity())
+    user = db.session.get(User, current_user_id)
+    if not user or not user.is_doctor or not user.doctor_id:
+        return jsonify({'message': 'Only doctors can check past appointments'}), 403
+
+    # Récupérer la date actuelle
+    now = datetime.utcnow()
+
+    # Trouver les rendez-vous passés qui ne sont ni "Completed" ni "Cancelled"
+    past_appointments = Appointment.query.filter(
+        Appointment.doctor_id == user.doctor_id,
+        Appointment.appointment_date < now,
+        Appointment.status.in_(['Pending', 'Confirmed'])
+    ).all()
+
+    notifications = []
+    for appointment in past_appointments:
+        # Vérifier si une notification a déjà été envoyée pour ce rendez-vous
+        existing_notification = Notification.query.filter_by(
+            user_id=current_user_id,
+            message=f"Appointment on {appointment.appointment_date.strftime('%Y-%m-%d %H:%M')} needs your action (Completed or Cancelled)."
+        ).first()
+
+        if not existing_notification:
+            # Ajouter une notification pour le médecin
+            message = f"Appointment on {appointment.appointment_date.strftime('%Y-%m-%d %H:%M')} needs your action (Completed or Cancelled)."
+            notification = add_notification(
+                user_id=current_user_id,
+                message=message,
+                related_message={'appointment_id': appointment.id},
+                notification_type='past_appointment'
+            )
+            notifications.append(notification.to_dict())
+
+    return jsonify({'notifications': notifications}), 200
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)

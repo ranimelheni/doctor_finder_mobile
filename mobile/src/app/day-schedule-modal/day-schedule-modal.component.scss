@@ -29,7 +29,7 @@ ion-header {
       transition: all 0.3s ease;
   
       &.selected {
-        --background: var(--ion-color-success);
+        --background: var(--ion-accent-color);
         --color: #ffffff;
         transform: scale(1.02);
         box-shadow: 0 4px 8px var(--ion-shadow-color);
@@ -42,11 +42,7 @@ ion-header {
         cursor: not-allowed;
       }
   
-      &:hover:not(.unavailable) {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px var(--ion-shadow-color);
-        --background: var(--ion-accent-color);
-      }
+    
   
       ion-label {
         font-size: 18px;

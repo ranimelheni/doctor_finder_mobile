@@ -1,0 +1,152 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ isPast ? 'Manage Past Appointment' : 'Manage Appointment' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Appointment Details Section -->
+  <div class="appointment-details">
+    <h3 class="section-title">
+      <ion-icon name="calendar-outline" class="title-icon"></ion-icon>
+      Appointment Details
+    </h3>
+    <ion-list lines="none" class="details-list">
+      <ion-item class="detail-item">
+        <ion-icon name="person-outline" slot="start" class="detail-icon"></ion-icon>
+        <ion-label>
+          <h4>Patient Name</h4>
+          <p>{{ appointment?.patient_name || 'Unknown' }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item class="detail-item">
+        <ion-icon name="calendar-outline" slot="start" class="detail-icon"></ion-icon>
+        <ion-label>
+          <h4>Date</h4>
+          <p>{{ appointment?.appointment_date | date:'medium' }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item class="detail-item">
+        <ion-icon name="person-circle-outline" slot="start" class="detail-icon"></ion-icon>
+        <ion-label>
+          <h4>User ID</h4>
+          <p>{{ appointment?.user_id }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item class="detail-item">
+        <ion-icon name="information-circle-outline" slot="start" class="detail-icon"></ion-icon>
+        <ion-label>
+          <h4>Status</h4>
+          <p class="status-text" [ngClass]="getStatusClass()">{{ appointment?.status || 'No status' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Actions Section for Pending (Future) -->
+  <ion-grid *ngIf="appointment?.status?.toLowerCase() === 'pending' && !isPast" class="action-buttons">
+    <ion-row>
+      <ion-col size="6">
+        <ion-button expand="block" color="success" (click)="confirm()" class="action-button">
+          <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+          Confirm
+        </ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button expand="block" color="danger" (click)="cancel()" class="action-button">
+          <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+          Cancel
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Actions Section for Pending (Past) -->
+  <ion-grid *ngIf="appointment?.status?.toLowerCase() === 'pending' && isPast" class="action-buttons">
+    <ion-row>
+      <ion-col size="6">
+        <ion-button expand="block" color="success" (click)="markCompleted()" class="action-button">
+          <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
+          Mark as Completed
+        </ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button expand="block" color="danger" (click)="markCancelled()" class="action-button">
+          <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+          Mark as Cancelled
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Actions Section for Confirmed -->
+  <ion-grid *ngIf="appointment?.status?.toLowerCase() === 'confirmed'" class="action-buttons">
+    <ion-row>
+      <ion-col size="6">
+        <ion-button expand="block" color="success" (click)="markCompleted()" class="action-button">
+          <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
+          Mark as Completed
+        </ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button expand="block" color="danger" (click)="cancel()" class="action-button">
+          <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+          Cancel
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Message for Completed -->
+  <ion-grid *ngIf="appointment?.status?.toLowerCase() === 'completed'" class="status-message">
+    <ion-row>
+      <ion-col>
+        <p class="info-text">
+          <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>
+          This appointment is Completed. No actions available.
+        </p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Message for Other Statuses (e.g., Cancelled) -->
+  <ion-grid *ngIf="appointment?.status?.toLowerCase() !== 'pending' && appointment?.status?.toLowerCase() !== 'confirmed' && appointment?.status?.toLowerCase() !== 'completed'" class="status-message">
+    <ion-row>
+      <ion-col>
+        <p class="info-text">
+          <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>
+          This appointment is {{ appointment?.status }} and cannot be managed.
+        </p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- View Appointment Details Button -->
+  <ion-grid *ngIf="!['confirmed', 'pending', 'cancelled'].includes(appointment?.status?.toLowerCase())" class="action-buttons">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="secondary" (click)="viewAppointmentDetails()" class="action-button">
+          <ion-icon name="document-text-outline" slot="start"></ion-icon>
+          View Appointment Details
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- View Patient Profile Button -->
+  <ion-grid class="action-buttons">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="primary" (click)="viewPatientProfile()" class="action-button">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          View Patient Profile
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -14,9 +14,10 @@ import { DayScheduleModalComponent } from './day-schedule-modal/day-schedule-mod
 import { AddDocumentModalComponent } from './add-document-modal/add-document-modal.component';
 
 import { FormsModule } from '@angular/forms';
+import { AppointmentActionModalComponent } from './appointment-action-modal/appointment-action-modal.component';
 
 @NgModule({
-  declarations: [AppComponent,BookingModalComponent,ConfirmationModalComponent,DayScheduleModalComponent,AddDocumentModalComponent],
+  declarations: [AppComponent,BookingModalComponent,ConfirmationModalComponent,DayScheduleModalComponent,AddDocumentModalComponent,AppointmentActionModalComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideHttpClient(withInterceptorsFromDi()) ,{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent],

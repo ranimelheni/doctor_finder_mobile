@@ -332,4 +332,28 @@ export class DoctorService {
       })
     );
   }
+  updateAppointmentStatus(appointmentId: number, status: string, token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(
+      `${this.apiUrl}/appointment/update_status`,
+      { appointment_id: appointmentId, status },
+      { headers }
+    ).pipe(
+      catchError(err => {
+        console.error('Error updating appointment status:', err);
+        return throwError(() => new Error(err.error?.message || 'Failed to update appointment status'));
+      })
+    );
+  }
+
+  // Méthode pour vérifier les rendez-vous passés
+  checkPastAppointments(token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.apiUrl}/appointments/check_past`, { headers }).pipe(
+      catchError(err => {
+        console.error('Error checking past appointments:', err);
+        return throwError(() => new Error(err.error?.message || 'Failed to check past appointments'));
+      })
+    );
+  }
 }

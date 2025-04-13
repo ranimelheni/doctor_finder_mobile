@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DoctorService } from '../services/doctor.service';
 import { ToastController } from '@ionic/angular';
@@ -9,7 +9,7 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./day-schedule-modal.component.scss'],
   standalone: false,
 })
-export class DayScheduleModalComponent {
+export class DayScheduleModalComponent{
   doctorId!: number;
   doctorName!: string;
   selectedDate!: string; // Matches DoctorProfilePage's string type
@@ -25,7 +25,9 @@ export class DayScheduleModalComponent {
 
   ionViewWillEnter() {
     this.loadSchedule();
+   
   }
+
 
   loadSchedule() {
     this.loading = true;

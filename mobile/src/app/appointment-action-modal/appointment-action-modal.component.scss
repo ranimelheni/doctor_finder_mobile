@@ -1,0 +1,173 @@
+// General styling for the modal content
+ion-content {
+    --background: var(--ion-background-color);
+    color: var(--ion-text-color);
+  }
+  
+  // Appointment Details Section
+  .appointment-details {
+    margin-bottom: 20px;
+  
+    .section-title {
+      display: flex;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ion-accent-color);
+      margin-bottom: 15px;
+  
+      .title-icon {
+        margin-right: 8px;
+        font-size: 1.4rem;
+        color: var(--ion-icon-color);
+      }
+    }
+  
+    .details-list {
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--ion-card-background);
+      box-shadow: 0 2px 8px var(--ion-shadow-color);
+  
+      .detail-item {
+        --padding-start: 15px;
+        --padding-end: 15px;
+        --padding-top: 10px;
+        --padding-bottom: 10px;
+        --border-color: rgba(255, 255, 255, 0.1);
+  
+        h4 {
+          font-size: 0.9rem;
+          color: var(--ion-subtext-color);
+          margin: 0;
+        }
+  
+        p {
+          font-size: 1rem;
+          color: var(--ion-text-color);
+          margin: 0;
+        }
+  
+        .detail-icon {
+          font-size: 1.3rem;
+          color: var(--ion-icon-color);
+          margin-right: 10px;
+        }
+  
+        .status-text {
+          font-weight: 500;
+          padding: 4px 8px;
+          border-radius: 12px;
+          display: inline-block;
+        }
+  
+        .status-pending {
+          background: rgba(255, 193, 7, 0.2);
+          color: #ffca2c;
+        }
+  
+        .status-confirmed {
+          background: rgba(40, 167, 69, 0.2);
+          color: #28a745;
+        }
+  
+        .status-completed {
+          background: rgba(0, 123, 255, 0.2);
+          color: #007bff;
+        }
+  
+        .status-cancelled {
+          background: rgba(220, 53, 69, 0.2);
+          color: #dc3545;
+        }
+  
+        .status-default {
+          background: rgba(108, 117, 125, 0.2);
+          color: var(--ion-subtext-color);
+        }
+      }
+    }
+  }
+  
+  // Action Buttons Section
+  .action-buttons {
+    margin-bottom: 15px;
+  
+    .action-button {
+      --border-radius: 8px;
+      --box-shadow: 0 2px 4px var(--ion-shadow-color);
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0.5px;
+  
+      ion-icon {
+        margin-right: 8px;
+        color: var(--ion-icon-color);
+      }
+    }
+  }
+  
+  // Status Message Section
+  .status-message {
+    margin-bottom: 15px;
+  
+    .info-text {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--ion-subtext-color);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+  
+      .info-icon {
+        margin-right: 10px;
+        font-size: 1.2rem;
+        color: var(--ion-icon-color);
+      }
+    }
+  }
+  
+  // Light Theme Adjustments
+  .light-theme {
+    .appointment-details {
+      .details-list {
+        background: var(--ion-card-background);
+        .detail-item {
+          --border-color: rgba(0, 0, 0, 0.1);
+  
+          .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+          }
+  
+          .status-confirmed {
+            background: rgba(40, 167, 69, 0.1);
+            color: #155724;
+          }
+  
+          .status-completed {
+            background: rgba(0, 123, 255, 0.1);
+            color: #004085;
+          }
+  
+          .status-cancelled {
+            background: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+          }
+  
+          .status-default {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--ion-subtext-color);
+          }
+        }
+      }
+    }
+  
+    .status-message {
+      .info-text {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--ion-subtext-color);
+      }
+    }
+  }

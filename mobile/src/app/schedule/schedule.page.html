@@ -57,7 +57,7 @@
           <div
             [ngClass]="getSlotClass(day, hour)"
             class="slot-content"
-            (click)="getSlotClass(day, hour).includes('booked-slot') && viewPatientProfile(day, hour)">
+            (click)="getSlotClass(day, hour).includes('booked-slot') && manageAppointment(day, hour)">
             {{ getSlotText(day, hour) }}
           </div>
         </ion-col>

@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { DoctorService } from '../services/doctor.service';
-import { Router } from '@angular/router'; // Add Router for navigation
+import { Router } from '@angular/router';
+import { ModalController, AlertController } from '@ionic/angular';
+import { AppointmentActionModalComponent } from '../appointment-action-modal/appointment-action-modal.component';
 
 @Component({
   selector: 'app-schedule',
@@ -20,20 +22,23 @@ export class SchedulePage {
   constructor(
     private authService: AuthService,
     private doctorService: DoctorService,
-    private router: Router // Inject Router
+    private router: Router,
+    private modalController: ModalController,
+    private alertController: AlertController
   ) {}
 
   ionViewWillEnter() {
     this.doctorId = this.authService.getDoctorId();
     this.initializeWeek();
     this.loadAppointments();
+    this.checkPastAppointments();
   }
 
   initializeWeek() {
     this.daysOfWeek = [];
     const start = new Date(this.currentWeekStart);
-    start.setHours(0, 0, 0, 0); // Start at midnight
-    for (let i = 0; i < 7; i++) { // 6 days (Mon-Sat)
+    start.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 7; i++) {
       const day = new Date(start);
       day.setDate(start.getDate() + i);
       this.daysOfWeek.push(day);
@@ -77,7 +82,10 @@ export class SchedulePage {
       return appDate.getHours() === slotTime.getHours() && appDate.toDateString() === day.toDateString();
     });
 
-    return appointment ? `Booked (User ${appointment.user_id})` : 'Free';
+    if (appointment) {
+      return `✔`;
+    }
+    return 'Free';
   }
 
   getSlotClass(day: Date, hour: string): string {
@@ -91,6 +99,78 @@ export class SchedulePage {
     });
 
     return appointment ? 'booked-slot clickable' : 'free-slot';
+  }
+
+  async manageAppointment(day: Date, hour: string) {
+    console.log('Using updated manageAppointment version (no redirect to profile)');
+  
+    const slotTime = new Date(day);
+    const [hourNum] = hour.split(':');
+    slotTime.setHours(parseInt(hourNum, 10), 0, 0, 0);
+  
+    const appointment = this.appointments.find(app => {
+      const appDate = new Date(app.appointment_date);
+      return appDate.getHours() === slotTime.getHours() && appDate.toDateString() === day.toDateString();
+    });
+  
+    if (!appointment) {
+      console.log('No appointment found for this slot:', { day, hour });
+      return;
+    }
+  
+    console.log('Selected appointment:', appointment);
+    console.log('Appointment status:', appointment.status);
+  
+    const now = new Date();
+    const isPast = slotTime < now;
+    console.log('Is appointment past?', isPast);
+  
+    console.log('Opening modal for appointment');
+    const modal = await this.modalController.create({
+      component: AppointmentActionModalComponent,
+      componentProps: {
+        appointment,
+        isPast: isPast
+      }
+    });
+  
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data?.action) {
+      let status: string;
+      if (data.action === 'Confirm') {
+        status = 'Confirmed';
+      } else if (data.action === 'Cancel') {
+        status = 'Cancelled';
+      } else if (data.action === 'Completed') {
+        status = 'Completed';
+      } else if (data.action === 'Cancelled') {
+        status = 'Cancelled';
+      } else {
+        console.log('Unknown action:', data.action);
+        return;
+      }
+      this.updateAppointmentStatus(appointment.id, status);
+    } else {
+      console.log('Modal dismissed without action');
+    }
+  }
+  updateAppointmentStatus(appointmentId: number, status: string) {
+    const token = this.authService.getToken();
+    if (!token) {
+      this.presentAlert('Error', 'You need to be logged in to update appointment status.');
+      return;
+    }
+
+    this.doctorService.updateAppointmentStatus(appointmentId, status, token).subscribe({
+      next: () => {
+        this.presentAlert('Success', `Appointment has been ${status.toLowerCase()}.`);
+        this.loadAppointments();
+      },
+      error: (err) => {
+        this.presentAlert('Error', err.message || 'Failed to update appointment status.');
+      }
+    });
   }
 
   viewPatientProfile(day: Date, hour: string) {
@@ -108,6 +188,20 @@ export class SchedulePage {
     }
   }
 
+  checkPastAppointments() {
+    const token = this.authService.getToken();
+    if (!token) return;
+
+    this.doctorService.checkPastAppointments(token).subscribe({
+      next: (response) => {
+        console.log('Past appointments notifications:', response.notifications);
+      },
+      error: (err) => {
+        console.error('Error checking past appointments:', err);
+      }
+    });
+  }
+
   previousWeek() {
     this.currentWeekStart.setDate(this.currentWeekStart.getDate() - 7);
     this.initializeWeek();
@@ -118,5 +212,14 @@ export class SchedulePage {
     this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
     this.initializeWeek();
     this.loadAppointments();
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }
