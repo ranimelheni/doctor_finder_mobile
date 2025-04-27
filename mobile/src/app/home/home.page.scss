@@ -7,6 +7,7 @@ ion-content {
   margin: 20px auto;
 }
 
+/* Patient View Styles (Unchanged) */
 .ad-container {
   padding: 16px 0;
   .ad-placeholder {
@@ -57,8 +58,8 @@ ion-content {
   }
 }
 
-.doctors-list, .users-list {
-  .doctor-card, .user-card {
+.doctors-list {
+  .doctor-card {
     background: var(--ion-item-background);
     border-radius: 12px;
     margin: 10px 0;
@@ -66,7 +67,7 @@ ion-content {
     padding: 10px;
     min-height: 100px;
     
-    .doctor-content, .user-content {
+    .doctor-content {
       display: flex;
       align-items: center;
       padding: 10px;
@@ -82,23 +83,18 @@ ion-content {
       }
     }
 
-    .doctor-info, .user-info {
+    .doctor-info {
       flex: 1;
-      .doctor-name, .user-name {
+      .doctor-name {
         font-size: 20px;
         font-weight: 600;
         color: var(--ion-text-color);
         margin: 0;
       }
-      .doctor-details, .user-details {
+      .doctor-details {
         font-size: 16px;
         color: var(--ion-subtext-color);
         margin: 4px 0 0 0;
-      }
-      .user-city {
-        font-size: 14px;
-        color: var(--ion-subtext-color);
-        margin: 2px 0 0 0;
       }
     }
 
@@ -112,6 +108,358 @@ ion-content {
     --background: transparent;
     ion-label { 
       color: var(--ion-subtext-color); 
+    }
+  }
+}
+
+/* Doctor View Styles (New) */
+.doctor-home {
+  padding: 16px;
+
+  .profile-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      margin-right: 16px;
+      img {
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .profile-info {
+      flex: 1;
+      .profile-name {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--ion-text-color);
+        margin: 0;
+      }
+      .profile-location {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        color: var(--ion-subtext-color);
+        margin: 4px 0 0 0;
+        ion-icon {
+          margin-right: 4px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .search-bar {
+    --background: var(--ion-item-background);
+    --color: var(--ion-text-color);
+    --border-radius: 20px;
+    --placeholder-color: var(--ion-subtext-color);
+    --box-shadow: 0 2px 8px var(--ion-shadow-color);
+    margin-bottom: 16px;
+  }
+
+  .healthy-diary-card {
+    background: var(--ion-accent-color, #3880ff);
+    color: #fff;
+    border-radius: 16px;
+    margin: 16px 0;
+    box-shadow: 0 4px 12px var(--ion-shadow-color);
+
+    ion-card-content {
+      padding: 16px;
+
+      .diary-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        h2 {
+          font-size: 20px;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .rating {
+          display: flex;
+          align-items: center;
+          ion-icon {
+            color: #ffd700;
+            margin-right: 4px;
+          }
+          span {
+            font-size: 14px;
+          }
+        }
+      }
+
+      p {
+        font-size: 14px;
+        margin: 8px 0;
+        opacity: 0.9;
+      }
+
+      .add-new-btn {
+        --color: #fff;
+        font-size: 14px;
+        ion-icon {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .quick-filters {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+
+    .filter-btn {
+      --border-radius: 12px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      font-size: 14px;
+      color: var(--ion-text-color);
+      border: 1px solid var(--ion-subtext-color);
+
+      &.heart {
+        --border-color: #ff4d4f;
+        ion-icon {
+          color: #ff4d4f;
+        }
+      }
+
+      &.dental {
+        --border-color: #40c4ff;
+        ion-icon {
+          color: #40c4ff;
+        }
+      }
+
+      &.pressure {
+        --border-color: #ffca28;
+        ion-icon {
+          color: #ffca28;
+        }
+      }
+    }
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0 8px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0;
+    }
+
+    .see-all {
+      font-size: 14px;
+      color: var(--ion-accent-color);
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+
+  .recommended-doctors {
+    ion-col {
+      padding: 8px;
+    }
+
+    .doctor-card {
+      background: var(--ion-item-background);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--ion-shadow-color);
+      text-align: center;
+      position: relative;
+
+      .doctor-image {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+      }
+
+      ion-card-content {
+        padding: 12px;
+
+        h3 {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--ion-text-color);
+          margin: 0 0 4px;
+        }
+
+        .rating {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 4px;
+          ion-icon {
+            color: #ffd700;
+            margin-right: 4px;
+            font-size: 14px;
+          }
+          span {
+            font-size: 14px;
+            color: var(--ion-subtext-color);
+          }
+        }
+
+        p {
+          font-size: 14px;
+          color: var(--ion-subtext-color);
+          margin: 0 0 8px;
+        }
+
+        .call-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          --color: var(--ion-accent-color);
+          ion-icon {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .checkup-schedule {
+    ion-col {
+      padding: 8px;
+    }
+
+    .schedule-card {
+      background: var(--ion-item-background);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--ion-shadow-color);
+      text-align: center;
+
+      ion-card-content {
+        padding: 12px;
+
+        .schedule-icon {
+          font-size: 24px;
+          color: var(--ion-accent-color);
+          margin-bottom: 8px;
+        }
+
+        p {
+          font-size: 14px;
+          color: var(--ion-subtext-color);
+          margin: 0 0 4px;
+        }
+
+        h4 {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--ion-text-color);
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+.users-list {
+  margin-top: 10px;
+}
+
+.user-card {
+  margin: 8px 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-content {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.large-avatar {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.user-details {
+  font-size: 14px;
+  color: #666;
+}
+
+.chevron-icon {
+  font-size: 20px;
+  color: #666;
+}
+
+.no-results {
+  text-align: center;
+  color: #999;
+}
+.slider-section {
+  margin: 20px 0;
+
+  .swiper {
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .swiper-slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .slide-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .slide-caption {
+        position: absolute;
+        bottom: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+    }
+
+    .swiper-pagination-bullet {
+      background: #1a3c34;
+      opacity: 0.5;
+    }
+
+    .swiper-pagination-bullet-active {
+      opacity: 1;
     }
   }
 }

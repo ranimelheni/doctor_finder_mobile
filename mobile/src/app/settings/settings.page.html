@@ -17,7 +17,7 @@
 
       <ion-card-content>
         <ion-list lines="none">
-          <!-- Profile Section (only when logged in) -->
+       
           <ng-container *ngIf="isLoggedIn">
             <ion-item class="section-header">
               <ion-label>Profile</ion-label>
@@ -29,7 +29,7 @@
             </ion-item>
           </ng-container>
 
-          <!-- Preferences Section -->
+         
           <ion-item class="section-header">
             <ion-label>Preferences</ion-label>
           </ion-item>
@@ -44,7 +44,7 @@
             <ion-toggle [(ngModel)]="notificationsEnabled" slot="end" color="primary"></ion-toggle>
           </ion-item>
 
-          <!-- Account Section (only when logged in) -->
+         
           <ng-container *ngIf="isLoggedIn">
             <ion-item class="section-header">
               <ion-label>Account</ion-label>
@@ -56,7 +56,7 @@
           </ng-container>
         </ion-list>
 
-        <!-- App Info -->
+       
         <div class="app-info ion-text-center ion-margin-top">
           <p>Doctor Finder Tunisia</p>
           <p class="version">Version 1.0.0</p>

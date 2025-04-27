@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content class="ion-padding" fullscreen>
-  <!-- Pull-to-Refresh -->
+
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="chevron-down-outline"
@@ -21,7 +21,7 @@
 
   <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
 
-  <!-- Mode 1: Doctor's Own Profile -->
+  
   <ion-card *ngIf="!loading && isDoctor && isOwnProfile && doctorDetails" class="doctor-own-card">
     <ion-card-header class="doctor-own-header">
       <ion-avatar class="doctor-own-avatar">
@@ -61,7 +61,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Mode 2: Regular User Own Profile -->
+
   <ion-card *ngIf="!loading && !isDoctor && isOwnProfile">
     <ion-card-header>
       <ion-card-title>{{ user.first_name }} {{ user.last_name }}</ion-card-title>
@@ -78,7 +78,7 @@
           <ion-label>Email: {{ user.email }}</ion-label>
         </ion-item>
       </ion-list>
-      <!-- Documents Section -->
+     
       <ion-list class="documents-list">
         <ion-list-header>Uploaded Documents</ion-list-header>
         <!-- Add Document Button (Always on Top) -->
@@ -88,7 +88,7 @@
             Add New Document
           </ion-button>
         </ion-item>
-        <!-- Document List (First 5 or All if showAll) -->
+       
         <ion-item *ngFor="let doc of displayedDocuments" (click)="viewDocument(doc.id)" button>
           <ion-icon name="document-outline" slot="start"></ion-icon>
           <ion-label>{{ doc.name }}</ion-label>
@@ -99,7 +99,7 @@
         <ion-item *ngIf="!loading && documents.length === 0" lines="none">
           <ion-label>No documents uploaded yet</ion-label>
         </ion-item>
-        <!-- See More Button -->
+       
         <ion-item lines="none" *ngIf="documents.length > 5 && !showAll">
           <ion-button expand="block" fill="outline" (click)="showAll = true">
             See More ({{ documents.length - 5 }} more)
@@ -109,7 +109,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Mode 3: Doctor Viewing Patient Profile -->
+
   <ion-card *ngIf="!loading && isDoctor && !isOwnProfile" class="patient-profile-card">
     <ion-card-header class="patient-profile-header">
       <ion-avatar class="patient-avatar">
@@ -131,10 +131,10 @@
           <ion-label class="label-value">{{ user.email }}</ion-label>
         </ion-item>
       </ion-list>
-      <!-- Documents Visible to Doctor -->
+   
       <ion-list class="documents-list">
         <ion-list-header>Patient Documents</ion-list-header>
-        <!-- Document List (First 5 or All if showAll) -->
+       
         <ion-item *ngFor="let doc of displayedDocuments" (click)="viewDocument(doc.id)" button>
           <ion-icon name="document-outline" slot="start"></ion-icon>
           <ion-label>{{ doc.name }}</ion-label>
@@ -145,7 +145,7 @@
         <ion-item *ngIf="!loading && documents.length === 0" lines="none">
           <ion-label>No documents shared with you</ion-label>
         </ion-item>
-        <!-- See More Button -->
+        
         <ion-item lines="none" *ngIf="documents.length > 5 && !showAll">
           <ion-button expand="block" fill="outline" (click)="showAll = true">
             See More ({{ documents.length - 5 }} more)

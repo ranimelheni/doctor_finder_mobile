@@ -14,7 +14,7 @@ export class EditProfilePage implements OnInit {
   editProfileForm: FormGroup;
   isDoctor: boolean = false;
   user: any;
-  showPasswordFields: boolean = false; // Contrôle l'affichage des champs de mot de passe
+  showPasswordFields: boolean = false; 
 
   constructor(
     private fb: FormBuilder,
@@ -76,7 +76,7 @@ export class EditProfilePage implements OnInit {
     );
   }
 
-  // Validateur personnalisé pour vérifier que les mots de passe correspondent
+
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirm_password')?.value;
@@ -86,11 +86,11 @@ export class EditProfilePage implements OnInit {
     return null;
   }
 
-  // Méthode pour basculer l'affichage des champs de mot de passe
+
   togglePasswordFields() {
     this.showPasswordFields = !this.showPasswordFields;
     if (!this.showPasswordFields) {
-      // Réinitialiser les champs de mot de passe si on masque les champs
+     
       this.editProfileForm.patchValue({
         old_password: '',
         password: '',
@@ -111,7 +111,7 @@ export class EditProfilePage implements OnInit {
       last_name: formValue.last_name
     };
 
-    // Ajouter les champs de mot de passe uniquement s'ils sont remplis et affichés
+   
     if (this.showPasswordFields) {
       if (!formValue.old_password || !formValue.password || !formValue.confirm_password) {
         this.presentAlert('Error', 'Please fill in all password fields to change your password.');
@@ -122,7 +122,7 @@ export class EditProfilePage implements OnInit {
       data.confirm_password = formValue.confirm_password;
     }
 
-    // Ajouter les champs spécifiques aux médecins s'ils sont présents
+    
     if (this.isDoctor) {
       if (formValue.city) data.city = formValue.city;
       if (formValue.address) data.address = formValue.address;

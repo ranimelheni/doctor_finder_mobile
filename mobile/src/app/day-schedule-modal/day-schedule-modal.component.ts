@@ -12,7 +12,7 @@ import { ToastController } from '@ionic/angular';
 export class DayScheduleModalComponent{
   doctorId!: number;
   doctorName!: string;
-  selectedDate!: string; // Matches DoctorProfilePage's string type
+  selectedDate!: string; 
   timeSlots: { time: string; available: boolean }[] = [];
   selectedTime: string | null = null;
   loading: boolean = true;
@@ -31,7 +31,7 @@ export class DayScheduleModalComponent{
 
   loadSchedule() {
     this.loading = true;
-    // selectedDate is already in YYYY-MM-DD format, no conversion needed
+   
     this.doctorService.getDaySchedule(this.doctorId, this.selectedDate).subscribe({
       next: (slots) => {
         this.timeSlots = slots;
@@ -79,6 +79,6 @@ export class DayScheduleModalComponent{
       color,
       position: 'bottom'
     });
-    await toast.present(); // Corrected from "await,他的present();"
+    await toast.present(); 
   }
 }

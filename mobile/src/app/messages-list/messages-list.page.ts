@@ -27,7 +27,6 @@ export class MessagesListPage implements OnInit {
     this.loadConversations();
   }
 
-  // Refresh every time the page is about to be entered
   ionViewWillEnter() {
     this.loadConversations();
   }
@@ -51,12 +50,11 @@ export class MessagesListPage implements OnInit {
     this.router.navigate(['/messages'], { queryParams: { user_id: userId } });
   }
 
-  // Handle pull-to-refresh
   doRefresh(event: any) {
     this.loadConversations();
     setTimeout(() => {
-      event.target.complete(); // Signal refresh completion
-    }, 1000); // Delay to show the spinner briefly
+      event.target.complete();
+    }, 1000); 
   }
 
   async presentToast(message: string, color: string) {

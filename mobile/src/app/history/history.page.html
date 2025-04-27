@@ -8,12 +8,12 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- Loading Spinner -->
+ 
   <div class="loading-container" *ngIf="isLoading">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
   </div>
 
-  <!-- Content -->
+  
   <div class="content" *ngIf="!isLoading">
     <ion-list class="consultations-list">
       <ion-list-header class="consultations-header">
@@ -52,7 +52,7 @@
                 <span class="value">{{ appointment.appointment_date | date:'short' }}</span>
               </div>
             </div>
-            <!-- Added custom arrow inside the card -->
+            
             <ion-icon name="chevron-forward-outline" class="detail-arrow"></ion-icon>
           </ion-card-content>
         </ion-card>

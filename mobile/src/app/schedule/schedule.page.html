@@ -11,7 +11,7 @@
   <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
 
   <div *ngIf="!loading" class="calendar-container">
-    <!-- Navigation -->
+   
     <ion-grid class="calendar-nav">
       <ion-row>
         <ion-col  class="week-title">
@@ -36,7 +36,7 @@
       </ion-row>
     </ion-grid>
 
-    <!-- Calendar Grid -->
+ 
     <ion-grid class="calendar-grid">
       <!-- Header Row (Days) -->
       <ion-row class="calendar-header">
@@ -48,7 +48,7 @@
         </ion-col>
       </ion-row>
 
-      <!-- Time Slots -->
+     
       <ion-row *ngFor="let hour of hours" class="time-row">
         <ion-col size="2" class="time-slot">
           <ion-label>{{ hour }}</ion-label>

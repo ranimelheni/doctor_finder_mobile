@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Subscribe to unreadCount$ from AuthService
+   
     this.unreadCountSubscription = this.authService.unreadCount$.subscribe(count => {
       this.unreadCount = count;
       console.log('Unread count updated in AppComponent:', this.unreadCount);
@@ -169,7 +169,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadUnreadCount() {
-    this.authService.loadUnreadCount(); // Delegate to AuthService
+    this.authService.loadUnreadCount(); 
   }
 
   setupSocket() {
@@ -192,7 +192,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.socket.on('new_notification', (notification) => {
       console.log('New notification received in AppComponent:', notification);
       if (!notification.is_read) {
-        this.authService.loadUnreadCount(); // Refresh count on new notification
+        this.authService.loadUnreadCount(); 
       }
     });
   }

@@ -29,8 +29,8 @@ export class AppointmentsPage {
     this.loading = true;
     this.doctorService.getAppointments().subscribe({
       next: (data) => {
-        this.appointments = data || []; // Ensure array even if null/undefined
-        console.log('Appointments loaded:', this.appointments); // Debug
+        this.appointments = data || []; 
+        console.log('Appointments loaded:', this.appointments);
         this.fetchDoctorNames();
       },
       error: (err) => {

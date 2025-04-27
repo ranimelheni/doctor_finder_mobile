@@ -35,23 +35,23 @@ export class AppointmentDetailsPage implements OnInit {
   }
   ngOnInit() {
     this.checkLoginStatus();
-
-    this.appointmentId = +this.route.snapshot.paramMap.get('id')!;
-    this.doctorId = this.authService.getDoctorId();
-    if (this.isLoggedIn && this.isDoctor) {
-      this.loadData();
-    }
-    else if(this.isLoggedIn && !this.isDoctor)
-       {
-        this.loadPatientAppointment();
-       }
-    else {
+    this.appointmentId = +this.route.snapshot.queryParamMap.get('id')! || 0;
+    if (!this.appointmentId) {
+      console.error('No appointment ID provided in query parameters');
       this.router.navigate(['/']);
       this.isLoading = false;
       return;
-      
-    } 
-
+    }
+    this.doctorId = this.authService.getDoctorId();
+    if (this.isLoggedIn && this.isDoctor) {
+      this.loadData();
+    } else if (this.isLoggedIn && !this.isDoctor) {
+      this.loadPatientAppointment();
+    } else {
+      this.router.navigate(['/']);
+      this.isLoading = false;
+    }
+  
     this.route.queryParams.subscribe(params => {
       if (params['refresh']) {
         this.isLoading = true;
@@ -60,29 +60,27 @@ export class AppointmentDetailsPage implements OnInit {
     });
   }
   
-  
-
   ionViewWillEnter() {
-   
     this.checkLoginStatus();
-    if (this.isLoggedIn && this.isDoctor) {
-      this.loadData();
-    }
-    else if(this.isLoggedIn && !this.isDoctor)
-       {
-        this.loadPatientAppointment();
-       }
-    else {
+    this.appointmentId = +this.route.snapshot.queryParamMap.get('id')! || 0;
+    if (!this.appointmentId) {
+      console.error('No appointment ID provided in query parameters');
       this.router.navigate(['/']);
       this.isLoading = false;
       return;
-      
-    } 
+    }
+    if (this.isLoggedIn && this.isDoctor) {
+      this.loadData();
+    } else if (this.isLoggedIn && !this.isDoctor) {
+      this.loadPatientAppointment();
+    } else {
+      this.router.navigate(['/']);
+      this.isLoading = false;
+    }
   }
 
   loadData() {
     this.isLoading = true;
-    // Use forkJoin to wait for both API calls to complete
     forkJoin([
       this.doctorService.getDoctorAppointments(this.doctorId!, undefined, this.appointmentId),
       this.doctorService.getAttachments(this.appointmentId)
@@ -90,11 +88,11 @@ export class AppointmentDetailsPage implements OnInit {
       next: ([appointmentData, attachmentsData]) => {
         this.appointment = appointmentData;
         this.attachments = attachmentsData.attachments || [];
-        this.isLoading = false; // Hide spinner when both are loaded
+        this.isLoading = false; 
       },
       error: (err) => {
         console.error('Error loading data:', err);
-        this.isLoading = false; // Hide spinner even if there’s an error
+        this.isLoading = false; 
       }
     });
   }

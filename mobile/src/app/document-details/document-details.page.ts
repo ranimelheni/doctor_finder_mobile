@@ -13,10 +13,10 @@ export class DocumentDetailsPage implements OnInit {
   isDoctor: boolean | null = null;
   document: any = null;
   loading: boolean = true;
-  newNote: string = ''; // For adding a new note
-  editingNoteId: number | null = null; // Tracks which note is being edited
-  editedNoteContent: string = ''; // Content of the note being edited
-  actionInProgress: boolean = false; // Tracks adding/editing/deleting state
+  newNote: string = ''; 
+  editingNoteId: number | null = null; 
+  editedNoteContent: string = ''; 
+  actionInProgress: boolean = false; 
 
   constructor(
     private route: ActivatedRoute,

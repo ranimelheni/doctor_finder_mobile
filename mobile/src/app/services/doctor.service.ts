@@ -52,7 +52,7 @@ export class DoctorService {
       payload.status = status;
     }
     if (appointment_id) {
-      payload.appointment_id = appointment_id;  // Add appointment_id to payload if provided
+      payload.appointment_id = appointment_id;  
     }
     return this.http.post<any[]>(`${this.apiUrl}/appointments`, payload, { headers: this.getHeaders() }).pipe(
       catchError(err => {
@@ -68,7 +68,7 @@ export class DoctorService {
       payload.status = status;
     }
     if (appointment_id) {
-      payload.appointment_id = appointment_id;  // Add appointment_id to payload if provided
+      payload.appointment_id = appointment_id;  
     }
     return this.http.post<any[]>(`${this.apiUrl}/doctor-appointments`, payload, { headers: this.getHeaders() }).pipe(
       catchError(err => {
@@ -291,6 +291,9 @@ export class DoctorService {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(`${this.apiUrl}/upload-document`, formData, { headers });
+  }
+  getRecentDoctors(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/recent-doctors`);
   }
 
   getDocumentDetails(documentId: number): Observable<any> {

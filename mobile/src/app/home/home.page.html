@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Find a Doctor</ion-title>
+    <ion-title>{{ isDoctor ? 'Doctor Dashboard' : 'Find a Doctor' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,7 +19,6 @@
 
   <ion-spinner *ngIf="loading" name="crescent" color="primary" class="loading-spinner"></ion-spinner>
 
-  <!-- Patient View -->
   <div *ngIf="!isDoctor && !loading">
     <div class="ad-container">
       <ion-card class="ad-placeholder">
@@ -34,6 +33,8 @@
         placeholder="Search doctors in Tunisia" 
         [(ngModel)]="searchQuery" 
         (ionInput)="filterDoctorsRealTime()" 
+        (ionClear)="searchDoctors()"
+        (ionSearch)="searchDoctors()"
         class="search-bar">
       </ion-searchbar>
       
@@ -142,45 +143,89 @@
     </ion-infinite-scroll>
   </div>
 
-  <!-- Doctor View -->
-<div *ngIf="isDoctor && !loading">
-  <h2>Users List</h2>
-  <ion-searchbar 
-    placeholder="Search users" 
-    [(ngModel)]="searchQuery" 
-    (ionInput)="filterUsersRealTime()" 
-    class="search-bar">
-  </ion-searchbar>
-  <ion-button *ngIf="isDoctor" expand="block" (click)="searchUsers()">Search</ion-button>
+  <div *ngIf="isDoctor && !loading" class="doctor-home">
+    <div class="profile-section">
+      <ion-avatar class="profile-avatar">
+        <img [src]="currentDoctor?.image || (currentDoctor?.gender === 'Male' ? 'assets/default-male.png' : (currentDoctor?.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-doctor.png'))" alt="Doctor Image">
+      </ion-avatar>
+      <div class="profile-info">
+        <h2 class="profile-name">{{ currentUser?.first_name || 'Doctor' }} {{ currentUser?.last_name || '' }}</h2>
+        <p class="profile-location">
+          <ion-icon name="location-outline"></ion-icon>
+          {{ currentDoctor?.city || 'Unknown Location' }}
+        </p>
+      </div>
+    </div>
 
-  <ion-list class="users-list">
-    <ion-card 
-      *ngFor="let user of displayedUsers" 
-      button 
-      [routerLink]="['/profile']" 
-      [queryParams]="{ user_id: user.user_id }" 
-      class="user-card">
-      <ion-card-content class="user-content">
-        <ion-avatar slot="start" class="large-avatar">
-          <img [src]="user.image || (user.gender === 'Male' ? 'assets/default-male.png' : (user.gender === 'Female' ? 'assets/default-female.png' : 'assets/default-patient.png'))" alt="User Image">
-        </ion-avatar>
-        <ion-label class="user-info">
-          <h2 class="user-name">{{ user.first_name }} {{ user.last_name }}</h2>
-          <p class="user-details">
-            {{ user.is_doctor && user.specialty ? 'Doctor - ' + user.specialty : 'Patient' }}
-          </p>
-        </ion-label>
-        <ion-icon name="chevron-forward-outline" slot="end" class="theme-icon chevron-icon"></ion-icon>
-      </ion-card-content>
-    </ion-card>
-    <ion-item *ngIf="displayedUsers.length === 0" class="no-results">
-      <ion-label>No users found</ion-label>
-    </ion-item>
-  </ion-list>
+    <ion-searchbar 
+      placeholder="Search patients" 
+      [(ngModel)]="searchQuery" 
+      (ionInput)="filterUsersRealTime()" 
+      (ionClear)="searchUsers()"
+      (ionSearch)="searchUsers()"
+      class="search-bar">
+    </ion-searchbar>
+    <ion-button expand="block" (click)="searchUsers()">Search Patients</ion-button>
 
-  <ion-infinite-scroll (ionInfinite)="loadMoreUsers($event)" [disabled]="!hasMoreUsers">
-    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more users...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-</div>
+ 
+    <ion-list class="users-list" *ngIf="searchQuery">
+      <ion-card 
+        *ngFor="let user of displayedUsers" 
+        button 
+        (click)="goToUserProfile(user.user_id)" 
+        class="user-card">
+        <ion-card-content class="user-content">
+          <ion-avatar slot="start" class="large-avatar">
+            <img [src]="user.image || 'assets/default-patient.png'" alt="User Image">
+          </ion-avatar>
+          <ion-label class="user-info">
+            <h2 class="user-name">{{ user.first_name }} {{ user.last_name }}</h2>
+            <p class="user-details">{{ user.city || 'Unknown Location' }}</p>
+          </ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end" class="theme-icon chevron-icon"></ion-icon>
+        </ion-card-content>
+      </ion-card>
+      <ion-item *ngIf="displayedUsers.length === 0 && searchQuery" class="no-results">
+        <ion-label>No users found</ion-label>
+      </ion-item>
+    </ion-list>
+
+    
+    <div class="slider-section">
+      <div #swiperContainer class="swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" *ngFor="let slide of slides">
+            <div class="slide-content">
+              <img [src]="slide.image" alt="Slide Image" class="slide-image" (error)="slide.image = 'assets/images/fallback.jpg'" />
+              <p class="slide-caption">{{ slide.caption }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+
+   
+    <div class="section-header">
+      <h3>Recent Appointments</h3>
+      <a (click)="seeAllSchedules()" class="see-all">See All</a>
+    </div>
+    <ion-grid class="recent-appointments">
+      <ion-row>
+        <ion-col size="6" *ngFor="let appointment of recentAppointments">
+          <ion-card class="schedule-card" button (click)="goToAppointmentDetails(appointment.id)">
+            <ion-card-content>
+              <ion-icon name="calendar-outline" class="schedule-icon"></ion-icon>
+              <p>With {{ appointment.patient_name || 'Unknown Patient' }}</p>
+              <h4>{{ appointment.formattedDate }}</h4>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-item *ngIf="recentAppointments.length === 0" class="no-results">
+        <ion-label>No recent appointments</ion-label>
+      </ion-item>
+    </ion-grid>
+  </div>
 </ion-content>

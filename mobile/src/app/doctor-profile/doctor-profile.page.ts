@@ -19,8 +19,8 @@ export class DoctorProfilePage {
   isFavorite: boolean = false;
   isOwnProfile: boolean = false;
   showMoreActions: boolean = false;
-  currentWeek: { date: string; isAvailable: boolean }[] = []; // Changed date to string to match API
-  selectedDay: string | null = null; // Changed to string to match API date format
+  currentWeek: { date: string; isAvailable: boolean }[] = []; 
+  selectedDay: string | null = null; 
 
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +38,6 @@ export class DoctorProfilePage {
 
   ionViewWillEnter() {
     this.loadDoctor();
-    // Removed loadCurrentWeek() call; fetchWeeklyAvailability handles it now
   }
 
   async loadDoctor() {
@@ -52,7 +51,7 @@ export class DoctorProfilePage {
           this.checkIfOwnProfile();
           if (this.authService.isLoggedIn()) {
             this.fetchDoctorUserId(parseInt(doctorId, 10));
-            this.fetchWeeklyAvailability(parseInt(doctorId, 10)); // Load today + 6 days
+            this.fetchWeeklyAvailability(parseInt(doctorId, 10)); 
           } else {
             this.loading = false;
           }
@@ -95,12 +94,12 @@ export class DoctorProfilePage {
       error: (err) => {
         console.error('Error fetching weekly availability:', err);
         this.presentToast('Failed to load availability', 'danger');
-        this.currentWeek = []; // Clear on error to avoid stale data
+        this.currentWeek = []; 
       }
     });
   }
 
-  // Removed loadCurrentWeek() since API now provides today + 6 days
+
 
   async openDaySchedule(day: { date: string; isAvailable: boolean }) {
     if (!this.authService.isLoggedIn()) {
@@ -122,7 +121,7 @@ export class DoctorProfilePage {
       componentProps: {
         doctorId: this.doctor.id,
         doctorName: this.doctor.name,
-        selectedDate: this.selectedDay // Pass as ISO string
+        selectedDate: this.selectedDay 
       }
     });
 

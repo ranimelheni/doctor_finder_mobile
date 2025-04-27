@@ -11,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class AddAttachmentPage implements OnInit {
   appointmentId: number|null=null;
-  attachmentType: 'note' | 'file' = 'note'; // Default to 'note'
+  attachmentType: 'note' | 'file' = 'note'; 
   attachmentName: string = '';
   attachmentDescription: string = '';
   attachmentContent: string = '';
@@ -37,11 +37,11 @@ export class AddAttachmentPage implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    this.resetForm(); // Reset fields when entering the page
+    this.resetForm(); 
   }
 
   onTypeChange() {
-    this.attachmentContent = ''; // Reset content when type changes
+    this.attachmentContent = '';
   }
 
   onFileSelected(event: any) {
@@ -67,7 +67,7 @@ export class AddAttachmentPage implements OnInit {
       name: this.attachmentName,
       type: this.attachmentType,
       description: this.attachmentDescription,
-      content: this.attachmentType === 'note' ? 'note' : this.attachmentContent, // Set 'note' for notes
+      content: this.attachmentType === 'note' ? 'note' : this.attachmentContent, 
       appid: this.appointmentId
     };
 

@@ -10,7 +10,7 @@
 <ion-content class="ion-padding" fullscreen>
   <ion-spinner *ngIf="loading" name="crescent" class="loading-spinner"></ion-spinner>
 
-  <!-- Doctor's Own Profile -->
+  
   <ion-card *ngIf="!loading && doctor && isOwnProfile" class="doctor-card animate__fadeIn">
     <ion-card-header class="doctor-header">
       <ion-avatar class="doctor-avatar">
@@ -56,7 +56,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Regular Profile -->
+
   <ion-card *ngIf="!loading && doctor && !isOwnProfile" class="doctor-card animate__fadeIn">
     <ion-card-header class="doctor-header">
       <ion-avatar class="doctor-avatar">
@@ -77,7 +77,6 @@
         </ion-item>
       </ion-list>
 
-      <!-- Weekly Calendar -->
       <div class="week-calendar">
         <div *ngFor="let day of currentWeek" 
              class="calendar-day" 

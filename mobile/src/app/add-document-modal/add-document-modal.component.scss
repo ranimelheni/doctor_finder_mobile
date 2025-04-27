@@ -1,31 +1,24 @@
-ion-content {
-    --background: var(--ion-background-color);
-  }
-  
-  ion-list {
-    padding: 0;
-  
-    ion-item {
-      --background: var(--ion-item-background);
-      margin-bottom: 12px;
-      border-radius: 8px;
-  
-      ion-label {
-        color: var(--ion-text-color);
-      }
-  
-      ion-input, ion-textarea, ion-select {
-        --color: var(--ion-text-color);
-      }
+ion-grid {
+  margin-top: 10px;
+
+  ion-button {
+    --border-radius: 8px;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    pointer-events: auto; 
+
+    ion-icon {
+      margin-right: 8px;
     }
   }
-  
-  ion-button {
-    margin-top: 20px;
+}
+
+ion-item {
+  &.file-feedback {
+    margin-top: 10px;
+    --background: rgba(var(--ion-color-light-rgb), 0.5);
     --border-radius: 8px;
   }
-  
-  input[type="file"] {
-    color: var(--ion-text-color);
-    padding: 10px 0;
-  }
+}

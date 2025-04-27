@@ -79,7 +79,7 @@ export class MessagesPage implements OnInit, OnDestroy {
         if (this.socket.connected) {
           this.socket.emit('join', this.currentUser.id, { token: this.authService.getToken() });
         }
-        this.joinChatRoom(); // Join the chat room
+        this.joinChatRoom(); 
       }
     });
 
@@ -109,7 +109,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.leaveChatRoom(); // Leave the chat room
+    this.leaveChatRoom(); 
     this.socket.disconnect();
     if (Keyboard) {
       Keyboard.removeAllListeners();
@@ -234,7 +234,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   getChatRoomName(userId: number, otherUserId: number): string {
-    const ids = [userId, otherUserId].sort((a, b) => a - b); // Sort for consistency
+    const ids = [userId, otherUserId].sort((a, b) => a - b); 
     return `chat_${ids[0]}_${ids[1]}`;
   }
 }

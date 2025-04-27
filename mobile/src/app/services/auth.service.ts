@@ -11,8 +11,8 @@ export class AuthService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   public isLoggedIn$ = this.isLoggedInSubject.asObservable();
   private userSubject = new BehaviorSubject<any>(this.getUser());
-  private unreadCountSubject = new BehaviorSubject<number>(0); // New: Track unread count
-  public unreadCount$ = this.unreadCountSubject.asObservable(); // Observable for unread count
+  private unreadCountSubject = new BehaviorSubject<number>(0); 
+  public unreadCount$ = this.unreadCountSubject.asObservable(); 
 
   constructor(private http: HttpClient) {
     this.loadThemePreference();
@@ -23,7 +23,7 @@ export class AuthService {
       tap(response => {
         this.setLoggedIn(true, response.user, response.access_token);
         this.userSubject.next(response.user);
-        this.loadUnreadCount(); // Load unread count on login
+        this.loadUnreadCount(); 
       })
     );
   }
@@ -33,7 +33,7 @@ export class AuthService {
       tap(response => {
         this.setLoggedIn(true, response.user, response.access_token);
         this.userSubject.next(response.user);
-        this.loadUnreadCount(); // Load unread count on register
+        this.loadUnreadCount(); 
       })
     );
   }
@@ -44,7 +44,7 @@ export class AuthService {
     localStorage.removeItem('access_token');
     this.isLoggedInSubject.next(false);
     this.userSubject.next(null);
-    this.unreadCountSubject.next(0); // Reset unread count on logout
+    this.unreadCountSubject.next(0); 
   }
 
   isLoggedIn(): boolean {
@@ -99,7 +99,7 @@ export class AuthService {
   markNotificationAsRead(notificationId: number): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getToken()}`);
     return this.http.post<any>(`${this.apiUrl}/notifications/${notificationId}/read`, {}, { headers }).pipe(
-      tap(() => this.loadUnreadCount()) // Update unread count after marking as read
+      tap(() => this.loadUnreadCount()) 
     );
   }
 
@@ -134,7 +134,7 @@ export class AuthService {
     }
   }
 
-  // New method to load and update unread count
+ 
   loadUnreadCount() {
     if (!this.isLoggedIn()) {
       this.unreadCountSubject.next(0);

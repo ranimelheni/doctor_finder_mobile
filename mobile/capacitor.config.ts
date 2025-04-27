@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appId: 'com.example.doctorfinder',
   appName: 'Doctor Finder Pro',
   webDir: 'www',
+  
   plugins: {
     StatusBar: {
       style: 'DARK',

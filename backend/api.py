@@ -24,7 +24,7 @@ app.config['JWT_SECRET_KEY'] = 'your-secret-key-here'
 
 db = SQLAlchemy(app)
 
-# Doctor model (unchanged)
+# Models
 class Doctor(db.Model):
     __tablename__ = 'doctors'
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +48,6 @@ class Doctor(db.Model):
             'phone': self.phone or ''
         }
 
-# User model with relationship to Doctor
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -58,7 +57,7 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     is_doctor = db.Column(db.Boolean, default=False)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'), nullable=True)
-    doctor = db.relationship('Doctor', backref='user', uselist=False, lazy='joined')  # Eager loading
+    doctor = db.relationship('Doctor', backref='user', uselist=False, lazy='joined') 
 
     def to_dict(self):
         return {
@@ -70,7 +69,7 @@ class User(db.Model):
             'doctor_id': self.doctor_id
         }
 
-# Message model (unchanged)
+
 class Message(db.Model):
     __tablename__ = 'messages'
     __table_args__ = {'extend_existing': True}
@@ -105,7 +104,7 @@ class Appointment(db.Model):
             base_dict['doctor_name'] = self.doctor.name
         return base_dict
 
-# Favorite model (unchanged)
+
 class Favorite(db.Model):
     __tablename__ = 'favorites'
     id = db.Column(db.Integer, primary_key=True)
@@ -139,7 +138,7 @@ class Attachment(db.Model):
             'extension': self.extension or ''
         }
     
-#user_document model
+
 class Document(db.Model):
     __tablename__ = 'documents'
     id = db.Column(db.Integer, primary_key=True)
@@ -188,7 +187,7 @@ class DocumentNote(db.Model):
         }
 
 
-# Database initialization (unchanged)
+
 with app.app_context():
     db.create_all()
     user = db.session.get(User, User.query.filter_by(email='john.doe@example.com').first().id if User.query.filter_by(email='john.doe@example.com').first() else None)
@@ -204,7 +203,7 @@ with app.app_context():
         )
         db.session.add(sample_user)
         db.session.commit()
-# New Notification model
+# Notification model
 class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True)
@@ -221,7 +220,7 @@ class Notification(db.Model):
             'created_at': self.created_at.isoformat(),
             'is_read': self.is_read
         }
-# Helper to add a notification
+
 def add_notification(user_id, message, related_message=None, sender_id=None, notification_type=None):
     notification = Notification(user_id=user_id, message=message)
     db.session.add(notification)
@@ -236,7 +235,7 @@ def add_notification(user_id, message, related_message=None, sender_id=None, not
     socketio.emit('new_notification', notification_data, room=str(user_id))
     return notification
 
-# Public endpoints (unchanged)
+
 @app.route('/api/doctors', methods=['GET'])
 def get_doctors():
     page = request.args.get('page', 1, type=int)
@@ -273,8 +272,8 @@ def get_all_users():
     per_page = request.args.get('limit', 5, type=int)
     name = request.args.get('name', '')
 
-    # Explicit join with User and Doctor tables
-    query = db.session.query(User).outerjoin(Doctor, User.doctor_id == Doctor.id)
+   
+    query = db.session.query(User).outerjoin(Doctor, User.doctor_id == Doctor.id)#join doctor and user
     if name:
         query = query.filter(
             db.or_(
@@ -284,14 +283,14 @@ def get_all_users():
             )
         )
 
-    # Paginate the query
+    
     users = query.paginate(page=page, per_page=per_page, error_out=False)
 
-    # Debug the join
+   
     for u in users.items:
         print(f"User ID: {u.id}, Doctor ID: {u.doctor_id}, Doctor: {u.doctor}, City: {u.doctor.city if u.doctor else None}")
 
-    # Build response
+    
     response = {
         'users': [{
             'user_id': u.id,
@@ -320,7 +319,7 @@ def get_doctor_by_id(id):
         return jsonify(doctor.to_dict())
     return jsonify({'message': 'Doctor not found'}), 404
 
-# Login endpoint (unchanged)
+
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -334,7 +333,7 @@ def login():
         return jsonify({'message': 'Login successful', 'user': user.to_dict(), 'access_token': access_token}), 200
     return jsonify({'message': 'Invalid email or password'}), 401
 
-# Register endpoint (unchanged)
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -353,7 +352,7 @@ def register():
     access_token = create_access_token(identity=str(new_user.id))
     return jsonify({'message': 'Registration successful', 'user': new_user.to_dict(), 'access_token': access_token}), 201
 
-# Protected endpoints (unchanged except for the modified ones below)
+
 @app.route('/api/appointments', methods=['POST'])
 @jwt_required()
 def get_appointments():
@@ -385,30 +384,29 @@ def get_doctor_appointments():
     current_user_id = int(get_jwt_identity())
     data = request.get_json()
     doctor_id = data.get('doctor_id')
-    status = data.get('status')  # Optional status filter
-    appointment_id = data.get('appointment_id')  # Optional appointment ID filter
+    status = data.get('status') 
+    appointment_id = data.get('appointment_id')  
     
     user = db.session.get(User, current_user_id)
     if not user or not user.is_doctor or user.doctor_id != doctor_id:
         return jsonify({'message': 'Unauthorized: You can only view your own appointments'}), 403
 
-    # Build the query
+   
     query = Appointment.query.filter(Appointment.doctor_id == doctor_id,Appointment.status != "Cancelled")    
     if appointment_id:
-        # Return a single appointment with patient name if appointment_id is provided
+        
         appointment = query.filter_by(id=appointment_id).first()
         if not appointment:
             return jsonify({'message': 'Appointment not found'}), 404
         return jsonify(appointment.to_dict(include_patient_name=True)), 200
     else:
-        # Return an array of appointments with patient names if no appointment_id
+       
         if status:
             if status not in ['Pending', 'Confirmed', 'Completed', 'Cancelled']:
                 return jsonify({'message': 'Invalid status value'}), 400
             query = query.filter_by(status=status)
         
         appointments = query.all()
-        # Pass include_patient_name=True to include patient names in the response
         return jsonify([appointment.to_dict(include_patient_name=True) for appointment in appointments]), 200
 
 
@@ -464,7 +462,7 @@ def delete_appointment():
     if appointment.user_id != current_user_id:
         return jsonify({'message': 'Unauthorized: You can only delete your own appointments'}), 403
 
-    # Notify the doctor
+    
     doctor_user = User.query.filter_by(doctor_id=appointment.doctor_id, is_doctor=True).first()
     if doctor_user:
         user = db.session.get(User, current_user_id)
@@ -473,7 +471,7 @@ def delete_appointment():
             doctor_user.id, 
             doctor_message, 
             related_message=doctor_message, 
-            sender_id=current_user_id,  # Patient’s ID
+            sender_id=current_user_id,  # id de patient
             notification_type='appointment_canceled'
         )
 
@@ -508,7 +506,6 @@ def book_appointment():
     db.session.add(new_appointment)
     db.session.commit()
 
-    # Notify the doctor
     doctor_user = User.query.filter_by(doctor_id=doctor_id, is_doctor=True).first()
     if doctor_user:
         doctor_message = f"New appointment booked by {user.first_name} on {appointment_date.strftime('%Y-%m-%d %H:%M')}"
@@ -520,7 +517,6 @@ def book_appointment():
             notification_type='appointment_booked'
         )
 
-    # Notify the user
     doctor = db.session.get(Doctor, doctor_id)
     user_message = f"New appointment booked with Dr. {doctor.name} on {appointment_date.strftime('%Y-%m-%d %H:%M')}"
     add_notification(
@@ -560,7 +556,7 @@ def get_profile():
     if not requesting_user:
         return jsonify({'message': 'Requesting user not found'}), 404
 
-    # If no user_id or requesting own profile, return full details
+    
     if not user_id or user_id == current_user_id:
         return jsonify({
             'id': requesting_user.id,
@@ -575,7 +571,6 @@ def get_profile():
     if not target_user:
         return jsonify({'message': 'Target user not found'}), 404
 
-    # Doctors can view patient profiles
     if requesting_user.is_doctor:
         return jsonify({
             'id': target_user.id,
@@ -585,7 +580,6 @@ def get_profile():
             'is_doctor': target_user.is_doctor
         }), 200
 
-    # Non-doctors can view minimal info (name only) for messaging
     return jsonify({
         'id': target_user.id,
         'first_name': target_user.first_name,
@@ -625,7 +619,7 @@ def remove_favorite():
         return jsonify({'message': 'Doctor removed from favorites'}), 200
     return jsonify({'message': 'Doctor not found in favorites'}), 404
 
-# SocketIO event handlers (unchanged)
+# SocketIO event handlers 
 @socketio.on('connect')
 def handle_connect():
     logger.info('Client connected')
@@ -730,7 +724,7 @@ def send_message():
     logger.info(f"Message sent from {current_user_id} to {receiver_id}")
     return jsonify({'message': 'Message sent successfully', 'message_id': new_message.id}), 201
 
-# Get messages between current user and another user (unchanged)
+# Get messages between current user and another user 
 @app.route('/api/messages', methods=['POST'])
 @jwt_required()
 def get_messages():
@@ -756,7 +750,7 @@ def get_messages():
         'is_read': msg.is_read
     } for msg in messages])
 
-# Mark messages as read (unchanged)
+# Mark messages as read 
 @app.route('/api/messages/mark-read', methods=['POST'])
 @jwt_required()
 def mark_messages_read():
@@ -781,7 +775,7 @@ def mark_messages_read():
     logger.info(f"Messages from {other_user_id} to {current_user_id} marked as read")
     return jsonify({'message': 'Messages marked as read'}), 200
 
-# Get conversations (unchanged)
+# Get conversations 
 @app.route('/api/messages/conversations', methods=['GET'])
 @jwt_required()
 def get_conversations():
@@ -852,9 +846,9 @@ def get_user_by_doctor_id():
 @app.route('/api/doctors/<int:doctor_id>/availability/week', methods=['GET'])
 @jwt_required()
 def get_weekly_availability(doctor_id):
-    today = datetime.today()  # Start from today
-    week_start = today.replace(hour=0, minute=0, second=0, microsecond=0)  # Midnight today
-    week_end = week_start + timedelta(days=7, hours=23, minutes=59, seconds=59)  # 6 days ahead
+    today = datetime.today()  
+    week_start = today.replace(hour=0, minute=0, second=0, microsecond=0)  
+    week_end = week_start + timedelta(days=7, hours=23, minutes=59, seconds=59)  
     
     appointments = Appointment.query.filter(
         Appointment.doctor_id == doctor_id,
@@ -906,7 +900,7 @@ def get_day_schedule(doctor_id):
     schedule = [{"time": slot, "available": slot not in booked_slots} for slot in slots]
     return jsonify(schedule)
 
-# New notification endpoints
+
 @app.route('/api/notifications', methods=['GET'])
 @jwt_required()
 def get_notifications():
@@ -935,12 +929,11 @@ def add_notification_endpoint():
     if not user_id or not message:
         return jsonify({'message': 'user_id and message are required'}), 400
 
-    # Add the notification
-    notification = add_notification(user_id, message)
+    
+    notification = add_notification(user_id, message)#ahouter notif
     return jsonify({'message': 'Notification added successfully', 'notification': notification.to_dict()}), 201
 
 
-#consultation
 @app.route('/api/consultations/history', methods=['GET'])
 @jwt_required()
 def get_consultation_history():
@@ -952,12 +945,12 @@ def get_consultation_history():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('limit', 5, type=int)
 
-    # Fetch appointments with status 'Completed' (historical consultations)
+    # Fetch appointments avec  status Completed
     query = Appointment.query.filter_by(doctor_id=user.doctor_id).filter(Appointment.status == 'Completed').order_by(Appointment.appointment_date.desc())
     appointments = query.paginate(page=page, per_page=per_page, error_out=False)
 
     response = {
-        'consultations': [a.to_dict() for a in appointments.items],  # Rename to 'consultations' for frontend compatibility
+        'consultations': [a.to_dict() for a in appointments.items],  # Rename to consultations pour front
         'total': appointments.total,
         'pages': appointments.pages,
         'page': appointments.page
@@ -973,7 +966,7 @@ def add_consultation():
         return jsonify({'message': 'Unauthorized: Doctors only'}), 403
 
     data = request.get_json()
-    appointment_id = data.get('appointment_id')  # Required now, since we're updating an appointment
+    appointment_id = data.get('appointment_id') 
    # notes = data.get('notes', '')
 
     if not appointment_id:
@@ -983,7 +976,7 @@ def add_consultation():
     if not appointment or appointment.doctor_id != user.doctor_id:
         return jsonify({'message': 'Invalid or mismatched appointment'}), 404
 
-    # Update the appointment
+    
     appointment.status = 'Completed'
     #appointment.notes = notes
 
@@ -992,7 +985,8 @@ def add_consultation():
         'message': 'Consultation added successfully',
         'consultation': appointment.to_dict()
     }), 201
-#add attachement
+
+
 @app.route('/api/attachments', methods=['POST'])
 @jwt_required()
 def add_attachment():
@@ -1012,11 +1006,11 @@ def add_attachment():
 
     # Set content based on type
     if attachment_type == 'note':
-        content = 'note'  # Default content for notes
+        content = 'note'  
     elif not content:
         return jsonify({'message': 'Content required for file'}), 400
 
-    # Extract extension if type is 'file'
+    
     extension = None
     if attachment_type == 'file' and '.' in name:
         extension = '.' + name.split('.')[-1].lower()
@@ -1033,7 +1027,7 @@ def add_attachment():
     db.session.commit()
 
     return jsonify({'message': 'Attachment added successfully', 'attachment': attachment.to_dict()}), 201
-# delete attachement
+
 @app.route('/api/attachments/<int:attachment_id>', methods=['DELETE'])
 @jwt_required()
 def delete_attachment(attachment_id):
@@ -1051,7 +1045,7 @@ def delete_attachment(attachment_id):
     db.session.delete(attachment)
     db.session.commit()
     return jsonify({'message': 'Attachment deleted successfully'}), 200
-#get attachement
+
 @app.route('/api/attachments/<int:appointment_id>', methods=['GET'])
 @jwt_required()
 def get_attachments(appointment_id):
@@ -1069,7 +1063,7 @@ def get_attachments(appointment_id):
         'attachments': [a.to_dict() for a in attachments]
     }), 200
 
-#user documents
+#patient documents
 @app.route('/api/upload-document', methods=['POST'])
 @jwt_required()
 def upload_document():
@@ -1102,7 +1096,13 @@ def upload_document():
     )
     db.session.add(document)
     db.session.commit()
-
+    message = f"New document '{name}' uploaded by {user.first_name} {user.last_name}"
+    add_notification(
+        user_id=int(doctor_id),
+        message=message,
+        notification_type='document_uploaded',
+        sender_id=current_user_id
+    )
     return jsonify({'message': 'Document uploaded successfully', 'document_id': document.id}), 201
 
 @app.route('/api/user-documents/<int:user_id>', methods=['GET'])
@@ -1135,11 +1135,20 @@ def get_document_details(document_id):
     if user.is_doctor and document.doctor_id == user.doctor_id and not document.viewed:
         document.viewed = True
         db.session.commit()
+        message = f"Your document '{document.name}' was viewed by Dr. {user.first_name} {user.last_name}"
+        add_notification(
+            user_id=document.user_id,
+            message=message,
+            notification_type='document_viewed',
+            sender_id=current_user_id
+        )
     include_doctor_name = not user.is_doctor
     return jsonify(document.to_dict(include_doctor_name=True)), 200
 
 
-# Add a new note
+
+
+# Add a new note to document uploaded by patient
 @app.route('/api/document/<int:document_id>/notes', methods=['POST'])
 @jwt_required()
 def add_document_note(document_id):
@@ -1165,10 +1174,16 @@ def add_document_note(document_id):
     )
     db.session.add(new_note)
     db.session.commit()
-
+    message = f"Dr. {user.first_name} {user.last_name} added a note to your document '{document.name}'"
+    add_notification(
+        user_id=document.user_id,
+        message=message,
+        notification_type='document_note_added',
+        sender_id=current_user_id
+    )
     return jsonify({'message': 'Note added successfully', 'note': new_note.to_dict()}), 201
 
-# Edit an existing note
+# Edit  note
 @app.route('/api/document/note/<int:note_id>', methods=['PUT'])
 @jwt_required()
 def edit_document_note(note_id):
@@ -1211,6 +1226,7 @@ def delete_document_note(note_id):
     db.session.commit()
 
     return jsonify({'message': 'Note deleted successfully'}), 200
+
 @app.route('/api/profile/edit', methods=['PUT'])
 @jwt_required()
 def edit_profile():
@@ -1223,7 +1239,6 @@ def edit_profile():
     if not data:
         return jsonify({'message': 'No data provided'}), 400
 
-    # Handle patient profile updates (first_name, last_name, password)
     if 'first_name' in data:
         if not data['first_name'].strip():
             return jsonify({'message': 'First name cannot be empty'}), 400
@@ -1237,12 +1252,11 @@ def edit_profile():
             return jsonify({'message': 'Old password is required to change the password'}), 400
         if not data['password']:
             return jsonify({'message': 'New password cannot be empty'}), 400
-        # Verify the old password
+        
         if not bcrypt.check_password_hash(user.password, data['old_password']):
             return jsonify({'message': 'Incorrect old password'}), 401
         user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
-    # Handle doctor profile updates (city, address, phone)
     if user.is_doctor and user.doctor_id:
         doctor = db.session.get(Doctor, user.doctor_id)
         if not doctor:
@@ -1275,7 +1289,7 @@ def update_appointment_status():
 
     data = request.get_json()
     appointment_id = data.get('appointment_id')
-    new_status = data.get('status')  # Expected: 'Confirmed', 'Cancelled', or 'Completed'
+    new_status = data.get('status') 
 
     if not appointment_id or not new_status:
         return jsonify({'message': 'appointment_id and status are required'}), 400
@@ -1300,7 +1314,8 @@ def update_appointment_status():
     add_notification(appointment.user_id, patient_message)
 
     return jsonify({'message': f'Appointment status updated to {new_status}'}), 200
-# Endpoint pour vérifier les rendez-vous passés et envoyer des notifications
+
+# vérifier les rendez-vous passés et envoyer des notifications
 @app.route('/api/appointments/check_past', methods=['GET'])
 @jwt_required()
 def check_past_appointments():
@@ -1309,10 +1324,10 @@ def check_past_appointments():
     if not user or not user.is_doctor or not user.doctor_id:
         return jsonify({'message': 'Only doctors can check past appointments'}), 403
 
-    # Récupérer la date actuelle
+ 
     now = datetime.utcnow()
 
-    # Trouver les rendez-vous passés qui ne sont ni "Completed" ni "Cancelled"
+    # Trouver les rendez-vous passés qui ne sont le Completed le Cancelled
     past_appointments = Appointment.query.filter(
         Appointment.doctor_id == user.doctor_id,
         Appointment.appointment_date < now,
@@ -1339,5 +1354,52 @@ def check_past_appointments():
             notifications.append(notification.to_dict())
 
     return jsonify({'notifications': notifications}), 200
+
+
+@app.route('/api/recent-doctors', methods=['GET'])
+@jwt_required()
+def get_recent_doctors():
+    current_user_id = int(get_jwt_identity())
+    user = db.session.get(User, current_user_id)
+
+    if not user or user.is_doctor:
+        return jsonify({'message': 'Unauthorized: Patients only'}), 403
+
+    six_months_ago = datetime.utcnow() - timedelta(days=180)
+
+   
+    recent_appointments = (
+        db.session.query(Appointment)
+        .filter(Appointment.user_id == current_user_id)
+        .filter(Appointment.appointment_date >= six_months_ago)
+        .filter(Appointment.status == 'Completed')
+        .all()
+    )
+
+   
+    doctor_ids = list({appointment.doctor_id for appointment in recent_appointments})
+
+    if not doctor_ids:
+        return jsonify({'doctors': []}), 200
+
+    
+    doctors = (
+        db.session.query(Doctor)
+        .filter(Doctor.id.in_(doctor_ids))
+        .all()
+    )
+
+   
+    doctor_list = [
+        {
+            'id': doctor.id,
+            'name': doctor.name,
+            'specialty': doctor.specialty
+        }
+        for doctor in doctors
+    ]
+
+    return jsonify({'doctors': doctor_list}), 200
+
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)

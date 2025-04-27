@@ -51,7 +51,7 @@ export class ProfilePage implements OnDestroy {
 
   async loadProfile() {
     this.loading = true;
-    this.showAll = false; // Reset showAll on refresh
+    this.showAll = false; 
     this.isDoctor = this.authService.isDoctor();
     const currentUser = this.authService.getUser();
   

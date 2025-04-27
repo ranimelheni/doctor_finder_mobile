@@ -11,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class SettingsPage {
   isLoggedIn: boolean = false;
-  isDarkMode: boolean = true; // Default value, will be overridden by stored preference
+  isDarkMode: boolean = true; 
   notificationsEnabled: boolean = false;
 
   constructor(
@@ -19,7 +19,7 @@ export class SettingsPage {
     private authService: AuthService,
     private router: Router
   ) {
-    // Load saved theme preference on initialization
+    
     this.loadThemePreference();
     this.isLoggedIn = this.authService.isLoggedIn();
     this.applyTheme();
@@ -33,7 +33,7 @@ export class SettingsPage {
     if (savedTheme !== null) {
       this.isDarkMode = savedTheme === 'true';
     }
-    // If no saved preference, default to dark mode (isDarkMode = true)
+   
   }
 
   toggleDarkMode() {
@@ -43,7 +43,7 @@ export class SettingsPage {
     } else {
       this.renderer.addClass(appElement, 'light-theme');
     }
-    // Save the preference to localStorage
+   
     localStorage.setItem('isDarkMode', this.isDarkMode.toString());
     console.log('Dark Mode:', this.isDarkMode);
   }

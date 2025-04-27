@@ -32,7 +32,7 @@
   <ion-split-pane contentId="main-content">
     <ion-router-outlet id="main-content"></ion-router-outlet>
 
-    <!-- Tabs for Regular Users -->
+   
     <ion-tabs *ngIf="!isDoctor">
       <ion-tab-bar slot="bottom">
         <ion-tab-button tab="home">
@@ -55,7 +55,7 @@
       </ion-tab-bar>
     </ion-tabs>
 
-    <!-- Tabs for Doctors -->
+    
     <ion-tabs *ngIf="isLoggedIn && isDoctor">
       <ion-tab-bar slot="bottom">
         <ion-tab-button tab="home">

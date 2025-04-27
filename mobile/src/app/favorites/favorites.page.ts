@@ -16,10 +16,10 @@ export class FavoritesPage {
   constructor(
     private authService: AuthService,
     private doctorService: DoctorService,
-    private router: Router // Add Router for navigation
+    private router: Router 
   ) {}
 
-  // Use ionViewWillEnter to reload favorites each time the page is visited
+ 
   ionViewWillEnter() {
     this.loadFavorites();
   }
@@ -38,7 +38,7 @@ export class FavoritesPage {
     });
   }
 
-  // Navigate to doctor profile when clicked
+
   goToDoctorProfile(doctorId: number) {
     this.router.navigate(['/doctor-profile'], { queryParams: { id: doctorId } });
   }

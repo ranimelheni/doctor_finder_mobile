@@ -1,7 +1,6 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Consultation History</ion-title>
-    <!-- Back Button -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
@@ -9,12 +8,11 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- Loading Spinner -->
   <div class="loading-container" *ngIf="isLoading">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
   </div>
 
-  <!-- Content -->
+  
   <div class="content" *ngIf="!isLoading">
     <ion-list class="consultations-list">
       <ion-list-header class="consultations-header">
@@ -53,7 +51,7 @@
                 <span class="value">{{ appointment.user_id }}</span>
               </div>
             </div>
-            <!-- Custom arrow inside the card -->
+          
             <ion-icon name="chevron-forward-outline" class="detail-arrow"></ion-icon>
           </ion-card-content>
         </ion-card>
