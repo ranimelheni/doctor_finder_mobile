@@ -66,7 +66,7 @@ Option 3: Run the Ionic Frontend (Online Server) The API is deployed online, so 
 -Navigate to the Ionic project directory
 -Install Ionic dependencies: npm install
 -Run the Ionic app: ionic serve
--The Ionic app connects to the online API (e.g., https://your-render-app.onrender.com).
+-The Ionic app connects to the online API (e.g., https://doctor-finder-3lrk.onrender.com).
 -Ensure the Ionic project is configured with the correct API URL.
 
 
