@@ -42,6 +42,6 @@ export class HistoryPage implements OnInit {
   }
 
   viewDetails(appointmentId: number) {
-    this.router.navigate(['/appointment-details', appointmentId]);
+    this.router.navigate(['/appointment-details'], { queryParams: { id: appointmentId } });
   }
 }

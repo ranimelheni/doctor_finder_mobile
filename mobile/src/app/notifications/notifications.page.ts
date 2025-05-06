@@ -22,7 +22,7 @@ export class NotificationsPage implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private router: Router
   ) {
-    this.socket = io('http://localhost:5000', { autoConnect: false });
+    this.socket = io('https://doctor-finder-3lrk.onrender.com', { autoConnect: false });
   }
 
   ngOnInit() {

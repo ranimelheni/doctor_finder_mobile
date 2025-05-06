@@ -1,6 +1,10 @@
-USE doctors_db;
+-- Create database (optional, as Neon database 'neondb' already exists)
+-- CREATE DATABASE neondb;
 
--- Drop existing tables if they exist
+-- Connect to the database (commented out, as connection is handled externally)
+-- \c neondb
+
+-- Drop existing tables if they exist (in reverse order to avoid foreign key issues)
 DROP TABLE IF EXISTS document_notes;
 DROP TABLE IF EXISTS documents;
 DROP TABLE IF EXISTS attachments;
@@ -11,102 +15,124 @@ DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS doctors;
 
+-- Drop existing ENUM types if they exist
+DROP TYPE IF EXISTS gender_types;
+DROP TYPE IF EXISTS appointment_status;
+DROP TYPE IF EXISTS message_type;
+DROP TYPE IF EXISTS attachment_type;
+
+-- Create ENUM types
+CREATE TYPE gender_types AS ENUM ('Male', 'Female');
+CREATE TYPE appointment_status AS ENUM ('Pending', 'Confirmed', 'Completed', 'Cancelled');
+CREATE TYPE message_type AS ENUM ('message', 'attachment');
+CREATE TYPE attachment_type AS ENUM ('note', 'file');
+
 -- Create doctors table
 CREATE TABLE doctors (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     specialty VARCHAR(50) NOT NULL,
     city VARCHAR(50) NOT NULL,
     image VARCHAR(200),
-    gender ENUM('Male', 'Female'),
+    gender gender_types,
     address VARCHAR(255),
     phone VARCHAR(20)
 );
 
--- Create users table with is_doctor and doctor_id
+-- Create users table
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     is_doctor BOOLEAN DEFAULT FALSE,
-    doctor_id INT,
-    FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+    doctor_id INTEGER,
+    CONSTRAINT fk_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
 
 -- Create appointments table
 CREATE TABLE appointments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    doctor_id INT NOT NULL,
-    appointment_date DATETIME NOT NULL,
-    status ENUM('Pending', 'Confirmed', 'Completed', 'Cancelled') DEFAULT 'Pending',
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    doctor_id INTEGER NOT NULL,
+    appointment_date TIMESTAMP NOT NULL,
+    status appointment_status DEFAULT 'Pending',
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
 
 -- Create favorites table
 CREATE TABLE favorites (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    doctor_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (doctor_id) REFERENCES doctors(id),
-    UNIQUE KEY unique_favorite (user_id, doctor_id) -- Prevent duplicate favorites
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    doctor_id INTEGER NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctors(id),
+    CONSTRAINT unique_favorite UNIQUE (user_id, doctor_id)
 );
+
+-- Create messages table
 CREATE TABLE messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sender_id INT NOT NULL,
-    receiver_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    sender_id INTEGER NOT NULL,
+    receiver_id INTEGER NOT NULL,
     message_text TEXT NOT NULL,
-    type ENUM('message', 'attachment') NOT NULL DEFAULT 'message',
-    extension VARCHAR(10) DEFAULT NULL,
-    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    type message_type NOT NULL DEFAULT 'message',
+    extension VARCHAR(10),
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_read BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (sender_id) REFERENCES users(id),
-    FOREIGN KEY (receiver_id) REFERENCES users(id)
+    CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES users(id),
+    CONSTRAINT fk_receiver_id FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
+-- Create notifications table
 CREATE TABLE notifications (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
     message VARCHAR(200) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_read BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+-- Create attachments table
 CREATE TABLE attachments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    type ENUM('note', 'file') NOT NULL,
+    type attachment_type NOT NULL,
     description TEXT NOT NULL,
     content TEXT NOT NULL,
-    appid INT NOT NULL,
-    extension VARCHAR(10) NULL
+    appid INTEGER NOT NULL,
+    extension VARCHAR(10),
+    CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES appointments(id)
 );
+
+-- Create documents table
 CREATE TABLE documents (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    doctor_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    doctor_id INTEGER NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    content TEXT NOT NULL, 
-    extension VARCHAR(10), 
+    content TEXT NOT NULL,
+    extension VARCHAR(10),
     viewed BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
 );
+
+-- Create document_notes table
 CREATE TABLE document_notes (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY ,
+    id SERIAL PRIMARY KEY,
     document_id INTEGER NOT NULL,
     doctor_id INTEGER NOT NULL,
     content TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (document_id) REFERENCES documents(id),
-    FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_document_id FOREIGN KEY (document_id) REFERENCES documents(id),
+    CONSTRAINT fk_doctor_id FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
+
 -- Insert 50 doctors into doctors table
 INSERT INTO doctors (name, specialty, city, gender, address, phone) VALUES
 ('Dr. Ahmed Ben Salah', 'Cardiology', 'Tunis', 'Male', '123 Avenue Habib Bourguiba', '216-71-123-456'),

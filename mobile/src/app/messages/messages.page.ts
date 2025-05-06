@@ -32,7 +32,7 @@ export class MessagesPage implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
     const token = this.authService.getToken();
-    this.socket = io('http://localhost:5000', {
+    this.socket = io('https://doctor-finder-3lrk.onrender.com', {
       auth: { token: token }
     });
 

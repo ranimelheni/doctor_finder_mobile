@@ -81,8 +81,8 @@ export class HomePage implements OnInit {
   hasMoreUsers: boolean = true;
   slides: Slide[] = [
     { image: 'assets/1.jpg', caption: 'Welcome to Our Healthcare Platform' },
-    { image: 'assets/2.jpg', caption: 'Book Your Appointment Today' },
-    { image: 'assets/3.jpg', caption: 'Stay Healthy with Regular Checkups' }
+    { image: 'assets/2.jpg', caption: 'Check Your Appointments Today' },
+    { image: 'assets/3.jpg', caption: 'Stay updated with your patients' }
   ];
   swiperConfig = {
     modules: [Navigation, Pagination, Autoplay],
@@ -125,8 +125,6 @@ export class HomePage implements OnInit {
     { name: 'Tunis', lat: 36.8065, lon: 10.1815 },
     { name: 'Zaghouan', lat: 36.4029, lon: 10.1429 }
   ];
-
-  private apiUrl = 'http://localhost:5000/api';
 
   constructor(
     private doctorService: DoctorService,
@@ -292,6 +290,9 @@ export class HomePage implements OnInit {
       }
     });
   }
+  ClearSearch(){
+    this.searchQuery = '';
+  }
 
   applyQuickFilter(filter: string) {
     if (filter === 'Nearby') {
@@ -360,6 +361,7 @@ export class HomePage implements OnInit {
     if (this.isDoctor && this.currentUser?.doctor_id) {
       this.loadCurrentDoctor();
       this.loadRecentAppointments();
+      this.initializeSwiper();
     }
     setTimeout(() => {
       event.target.complete();

@@ -56,7 +56,7 @@ export class AppointmentActionModalComponent implements OnInit {
   }
   viewAppointmentDetails() {
     this.modalController.dismiss().then(() => {
-      this.router.navigate(['/appointment-details', this.appointment.id]);
+      this.router.navigate(['/appointment-details'], { queryParams: { id: this.appointment.id } });
     });
   }
   getStatusClass(): string {

@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class DoctorService {
-  private apiUrl = 'http://localhost:5000/api';
+  private apiUrl = 'https://doctor-finder-3lrk.onrender.com/api';
 
   constructor(
     private http: HttpClient,

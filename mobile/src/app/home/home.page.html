@@ -33,7 +33,7 @@
         placeholder="Search doctors in Tunisia" 
         [(ngModel)]="searchQuery" 
         (ionInput)="filterDoctorsRealTime()" 
-        (ionClear)="searchDoctors()"
+        (ionClear)="ClearSearch()"
         (ionSearch)="searchDoctors()"
         class="search-bar">
       </ion-searchbar>
@@ -161,7 +161,7 @@
       placeholder="Search patients" 
       [(ngModel)]="searchQuery" 
       (ionInput)="filterUsersRealTime()" 
-      (ionClear)="searchUsers()"
+      (ionClear)="ClearSearch()"
       (ionSearch)="searchUsers()"
       class="search-bar">
     </ion-searchbar>
